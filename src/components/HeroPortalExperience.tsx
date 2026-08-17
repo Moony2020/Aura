@@ -295,12 +295,11 @@ export default function HeroPortalExperience() {
           </svg>
         </div>
 
-        {/* Bottom Interactive Bar: Left Note Card | Center Fire-Glow Button & Scroll | Right Collections Card */}
-        <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-end justify-between gap-4 pb-2 pointer-events-auto">
+        {/* Bottom Interactive Bar: Left Explore Button | Center Scroll to Enter | Right Collections Card */}
+        <div className="relative w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-end justify-between gap-4 pb-2 pointer-events-auto">
           
-          {/* Center: Explore Button with Animated Golden Fire Border & Luxury Scroll to Enter */}
-          <div className="flex flex-col items-center space-y-3">
-            {/* Fire / Aura Animated Border Container */}
+          {/* Left: Explore Button with Animated Golden Fire Border */}
+          <div className="flex flex-col items-start">
             <div className="p-[1.5px] rounded-full gold-fire-container shadow-[0_0_25px_rgba(229,193,88,0.4)] group cursor-pointer">
               <button
                 type="button"
@@ -315,14 +314,19 @@ export default function HeroPortalExperience() {
                 <ChevronRight size={16} className="text-[#E5C158] group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
+          </div>
 
-            {/* Refined Scroll to Enter in Luxury Serif Italic with Subtle Floating Arrow */}
-            <div className="flex flex-col items-center space-y-1 text-[#FFDF78]">
-              <span className="font-serif-luxury italic text-xs tracking-[0.3em] font-normal text-[#FFDF78] drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
-                SCROLL TO ENTER
-              </span>
-              <ArrowDown size={14} className="text-[#FFDF78] animate-bounce drop-shadow-[0_2px_8px_rgba(0,0,0,1)]" />
-            </div>
+          {/* Center: Refined Scroll to Enter in Luxury Serif Italic with Subtle Floating Arrow (Centered on screen) */}
+          <div
+            onClick={() => {
+              window.scrollTo({ top: 1050, behavior: "smooth" });
+            }}
+            className="md:absolute md:left-1/2 md:-translate-x-1/2 md:bottom-2 flex flex-col items-center space-y-1 text-[#FFDF78] cursor-pointer group hover:scale-105 transition-transform duration-300"
+          >
+            <span className="font-serif-luxury italic text-xs tracking-[0.3em] font-normal text-[#FFDF78] group-hover:text-[#FFF3D1] drop-shadow-[0_2px_10px_rgba(0,0,0,1)] transition-colors">
+              SCROLL TO ENTER
+            </span>
+            <ArrowDown size={14} className="text-[#FFDF78] group-hover:text-[#FFF3D1] animate-bounce drop-shadow-[0_2px_8px_rgba(0,0,0,1)] transition-colors" />
           </div>
 
           {/* Right: Explore Our Collections — real glass blur. backdrop-filter can't reliably blur
