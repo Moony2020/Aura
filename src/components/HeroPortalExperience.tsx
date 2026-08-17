@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Sparkles, ArrowDown, ChevronRight, Compass } from "lucide-react";
+import { publicEnv } from "@/config/env.public";
 
 const HERO_VIDEO_URL =
-  process.env.NEXT_PUBLIC_CLOUDINARY_HERO_VIDEO_URL ||
+  publicEnv.NEXT_PUBLIC_CLOUDINARY_HERO_VIDEO_URL ||
   "https://res.cloudinary.com/dcru4if6j/video/upload/v1786968029/hero-video_asvbmt.mp4";
 
 const WORLD_1_VIDEO_URL =
-  process.env.NEXT_PUBLIC_CLOUDINARY_WORLD_1_VIDEO_URL ||
+  publicEnv.NEXT_PUBLIC_CLOUDINARY_WORLD_1_VIDEO_URL ||
   "https://res.cloudinary.com/dcru4if6j/video/upload/v1786968075/1_fdsdh4.mp4";
 
 if (typeof window !== "undefined") {
@@ -305,7 +305,7 @@ export default function HeroPortalExperience() {
               <button
                 type="button"
                 onClick={() => {
-                  window.scrollBy({ top: 1200, behavior: "smooth" });
+                  window.scrollTo({ top: 1050, behavior: "smooth" });
                 }}
                 className="px-8 sm:px-10 py-3 sm:py-3.5 rounded-full bg-[#0D0D0E]/90 hover:bg-[#0D0D0E]/75 transition-all duration-300 flex items-center space-x-2.5 backdrop-blur-xl"
               >

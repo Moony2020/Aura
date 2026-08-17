@@ -89,6 +89,10 @@ export default function WorldProgressRail() {
   }, []);
 
   const scrollToWorld = (id: string) => {
+    if (id === "world-1") {
+      window.scrollTo({ top: 1050, behavior: "smooth" });
+      return;
+    }
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
