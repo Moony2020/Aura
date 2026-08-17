@@ -210,7 +210,7 @@ export default function HeroPortalExperience() {
         ref={perfumeRef}
         className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none will-change-[transform,opacity,filter]"
       >
-        <div className="relative w-[104px] sm:w-[122px] md:w-[142px] lg:w-[158px] xl:w-[172px] h-[208px] sm:h-[244px] md:h-[284px] lg:h-[316px] mt-6 sm:mt-8 translate-y-0.5 flex items-center justify-center">
+        <div className="relative w-[130px] sm:w-[145px] md:w-[155px] lg:w-[168px] xl:w-[180px] h-[260px] sm:h-[290px] md:h-[310px] lg:h-[336px] xl:h-[360px] translate-y-12 sm:translate-y-14 md:translate-y-10 lg:translate-y-12 flex items-center justify-center">
           {/* Subtle luminous ambient aura behind bottle */}
           <div className="absolute inset-0 bg-radial-gold w-3/4 h-3/4 mx-auto my-auto rounded-full filter blur-2xl opacity-40 bg-[#E5C158]/30 pointer-events-none" />
 
@@ -228,12 +228,12 @@ export default function HeroPortalExperience() {
       {/* ========================================================================= */}
       <div
         ref={heroCopyRef}
-        className="absolute inset-0 z-30 flex flex-col justify-between pt-24 sm:pt-28 pb-6 sm:pb-8 px-6 sm:px-12 md:px-16 lg:px-20 pointer-events-none will-change-[transform,opacity]"
+        className="absolute inset-0 z-30 flex flex-col justify-between pt-20 sm:pt-24 md:pt-28 pb-6 sm:pb-8 px-6 sm:px-12 md:px-16 lg:px-20 pointer-events-none will-change-[transform,opacity]"
       >
-        <div className="w-full max-w-7xl mx-auto flex flex-col items-start justify-center flex-1">
+        <div className="w-full max-w-7xl mx-auto flex flex-col items-start justify-start md:justify-center flex-1 pt-2 sm:pt-4 md:pt-0">
           {/* Top Tagline */}
-          <div className="mb-4 sm:mb-6">
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#080809]/50 border border-[#D4AF37]/30 backdrop-blur-md">
+          <div className="mb-3 sm:mb-6">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#080809]/60 border border-[#D4AF37]/40 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
               <Sparkles size={12} className="text-[#E5C158]" />
               <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-[#F5E4B5] font-light">
                 Haute Parfumerie Experience
@@ -243,14 +243,14 @@ export default function HeroPortalExperience() {
 
           {/* Left-aligned Copy */}
           <div className="max-w-xl text-left flex flex-col items-start">
-            <h1 className="font-serif-luxury text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] font-light tracking-[0.06em] text-[#FFF7E6] uppercase leading-[1.08] drop-shadow-[0_4px_25px_rgba(0,0,0,0.85)]">
+            <h1 className="font-serif-luxury text-3xl sm:text-4xl md:text-6xl lg:text-[4.25rem] font-light tracking-[0.06em] text-[#FFF7E6] uppercase leading-[1.08] drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]">
               Enter the <br />
-              <span className="italic font-normal gold-gradient-text drop-shadow-[0_2px_20px_rgba(229,193,88,0.4)]">
+              <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D6] via-[#F4D068] to-[#E5B53B] drop-shadow-[0_2px_24px_rgba(229,193,88,0.5)]">
                 World of Fragrance
               </span>
             </h1>
 
-            <p className="mt-4 sm:mt-5 text-xs sm:text-sm lg:text-lg text-[#FFF9F2] font-light tracking-[0.08em] max-w-md drop-shadow-[0_2px_16px_rgba(0,0,0,1)] leading-relaxed">
+            <p className="mt-3 sm:mt-5 text-xs sm:text-sm lg:text-lg text-[#FFF9F2] font-light tracking-[0.08em] max-w-xs sm:max-w-md drop-shadow-[0_2px_16px_rgba(0,0,0,1)] leading-relaxed">
               Discover scents that leave an unforgettable impression, crafted with the rarest essences by master perfumers.
             </p>
           </div>
