@@ -46,12 +46,12 @@ export async function StorefrontHeaderShell() {
       <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center min-h-[4.5rem] py-2.5 px-3 sm:px-5 lg:px-6">
 
         {/* Left: Sidebar trigger + Desktop mega nav (visible down to lg: 1024px) */}
-        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 xl:gap-4 min-w-0 pr-3 sm:pr-4 xl:pr-8">
           {/* Sidebar hamburger (all breakpoints) */}
           <SidebarNavigation collections={collections} />
 
           {/* Desktop mega-nav links (hidden on mobile/tablet portrait <1024px, visible on lg and up) */}
-          <div className="hidden lg:flex items-center gap-4 xl:gap-5 min-w-0">
+          <div className="hidden lg:flex items-center gap-2.5 xl:gap-4.5 min-w-0">
             <StorefrontMegaMenu collections={collections} />
             <StorefrontSecondaryNav />
           </div>
@@ -63,7 +63,7 @@ export async function StorefrontHeaderShell() {
         </div>
 
         {/* Right: Action icons (Search, Account, Wishlist, Cart) */}
-        <div className="flex items-center justify-end gap-0.5 sm:gap-1 shrink-0" aria-label="Storefront actions">
+        <div className="flex items-center justify-end gap-1 sm:gap-1.5 xl:gap-2.5 shrink-0 pl-3 sm:pl-4 xl:pl-8" aria-label="Storefront actions">
           <StorefrontSearchAction />
           <Link
             className="p-2 text-[#c2b8a3] hover:text-[#e5c982] transition-colors flex items-center justify-center cursor-pointer"

@@ -12,7 +12,7 @@ export function StorefrontSecondaryNav() {
 
   return (
     <nav className="storefront-secondary-nav" aria-label="Secondary storefront navigation">
-      <ul>
+      <ul className="flex items-center gap-2 xl:gap-3.5">
         {storefrontNavigation
           .filter((item) => secondaryLabels.includes(item.label as (typeof secondaryLabels)[number]))
           .map((item) => {

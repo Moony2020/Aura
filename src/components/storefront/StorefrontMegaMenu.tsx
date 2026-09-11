@@ -148,7 +148,7 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
 
   return (
     <div className="storefront-mega-nav" ref={headerRef} onMouseLeave={closeMenuWithDelay}>
-      <div className="storefront-mega-nav__triggers">
+      <div className="storefront-mega-nav__triggers flex items-center gap-2 xl:gap-3.5">
         <button
           type="button"
           className={`storefront-mega-trigger ${openMenu === "fragrances" ? "storefront-mega-trigger--active" : ""}`}
@@ -354,7 +354,7 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
             aria-hidden="true"
           >
             <path
-              d={generateMegaMenuPath(panelDims.width, panelDims.height, tabMetrics.x, tabMetrics.w, false)}
+              d={generateMegaMenuPath(panelDims.width, panelDims.height, tabMetrics.x, tabMetrics.w)}
               fill="#0e0c10"
               stroke="rgba(229, 193, 88, 0.45)"
               strokeWidth="1"
