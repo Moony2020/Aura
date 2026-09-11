@@ -42,22 +42,22 @@ export async function StorefrontHeaderShell() {
   const collections = await readVisibleCollectionsForNavigation();
 
   return (
-    <header className="sticky top-0 z-[100] w-full border-b border-[rgba(229,193,88,0.15)] bg-[rgba(12,10,14,0.28)] backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.15)] transition-all duration-300">
-      <div className="w-full flex items-center justify-between min-h-[4.5rem] py-2.5 px-3 sm:px-5 lg:px-6">
+    <header className="sticky top-0 z-[100] w-full bg-[rgba(12,10,14,0.4)] backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.25)] transition-all duration-300">
+      <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center min-h-[4.5rem] py-2.5 px-3 sm:px-5 lg:px-6">
 
-        {/* Left: Sidebar trigger + Desktop mega nav (shrink-0 so left side never compresses) */}
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+        {/* Left: Sidebar trigger + Desktop mega nav */}
+        <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
           {/* Sidebar hamburger (all breakpoints) */}
           <SidebarNavigation collections={collections} />
 
           {/* Desktop mega-nav links (hidden on mobile/tablet) */}
-          <div className="hidden xl:flex items-center gap-6 shrink-0">
+          <div className="hidden xl:flex items-center gap-2 min-w-0">
             <StorefrontMegaMenu collections={collections} />
             <StorefrontSecondaryNav />
           </div>
         </div>
 
-        {/* Center: Brand Logo */}
+        {/* Center: Brand Logo (Always in the exact dead center) */}
         <div className="flex items-center justify-center px-4 shrink-0">
           <StorefrontBrandLogo />
         </div>
