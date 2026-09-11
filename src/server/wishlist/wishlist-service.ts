@@ -11,7 +11,7 @@ import { MongoWishlistRepository } from "../repositories/mongo-wishlist-reposito
 import { buildGuestWishlistCookie, generateGuestWishlistToken, guestWishlistExpiresAt, hashGuestWishlistToken, isPlausibleGuestWishlistToken, type GuestWishlistCookieDescriptor } from "./guest-wishlist-token.ts";
 
 export type WishlistOwnershipContext = { kind: "GUEST"; guestToken?: string | null } | { kind: "USER"; userId: string };
-export type WishlistViewItem = { productSlug: string | null; productName: string; media: { url: string; alt: string } | null; audience: Product["audience"] | null; family: null; currentPrice: { amount: number; currency: string } | null; availability: "AVAILABLE" | "UNAVAILABLE"; savedAt: string };
+export type WishlistViewItem = { productSlug: string | null; defaultVariantId: string | null; productName: string; media: { url: string; alt: string } | null; audience: Product["audience"] | null; family: null; currentPrice: { amount: number; currency: string } | null; availability: "AVAILABLE" | "UNAVAILABLE"; savedAt: string };
 export type WishlistViewModel = { items: WishlistViewItem[]; itemCount: number; version: number };
 export type WishlistMutationResult = { wishlist: WishlistViewModel; setCookie?: GuestWishlistCookieDescriptor };
 type Deps = { wishlistRepository?: WishlistRepository; productRepository?: ProductRepository };
@@ -41,7 +41,7 @@ export class WishlistService {
     return {
       items: wishlist.items.map((item) => {
         const product = products.get(item.productId);
-        if (!product) return { productSlug: null, productName: "Unavailable fragrance", media: null, audience: null, family: null, currentPrice: null, availability: "UNAVAILABLE", savedAt: item.addedAt.toISOString() };
+        if (!product) return { productSlug: null, defaultVariantId: null, productName: "Unavailable fragrance", media: null, audience: null, family: null, currentPrice: null, availability: "UNAVAILABLE", savedAt: item.addedAt.toISOString() };
         const active = product.variants.filter((variant) => variant.isActive).sort((a, b) => a.price.amount - b.price.amount)[0];
         const media = product.media.find((entry) => entry.id === product.primaryMediaId) ?? product.media[0];
         const mediaUrl = media ? (
@@ -51,6 +51,7 @@ export class WishlistService {
         ) : null;
         return {
           productSlug: product.status === "PUBLISHED" ? product.slug : null,
+          defaultVariantId: active?.id ?? null,
           productName: product.name,
           media: media && mediaUrl ? { url: mediaUrl, alt: media.alt } : null,
           audience: product.audience ?? null,

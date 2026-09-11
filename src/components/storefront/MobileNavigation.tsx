@@ -217,13 +217,6 @@ export function MobileNavigation({ collections }: { collections: CollectionSumma
               </div>
 
               {/* Other Navigation Links */}
-              <Link
-                href="/wishlist"
-                className={`block text-base uppercase tracking-[0.25em] font-medium py-1 transition-colors ${isActive("/wishlist") ? "text-[#e5c982]" : "text-[#f3ebdb] hover:text-[#e5c982]"}`}
-                onClick={closeMenu}
-              >
-                Wishlist
-              </Link>
               {storefrontNavigation
                 .filter((item) => !["Maison", "Fragrances", "Collections"].includes(item.label))
                 .map((item) =>

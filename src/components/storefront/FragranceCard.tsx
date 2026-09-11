@@ -113,9 +113,9 @@ export function FragranceCard({
   const displayBadge = badge ?? (discountPercentage ? `-${discountPercentage}%` : undefined);
 
   return (
-    <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#3a3528]/50 bg-[#110f14]/80 transition-all duration-300 hover:border-[#c5a869]/70 hover:shadow-[0_12px_30px_rgba(0,0,0,0.7)]">
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-[#3a3528]/50 bg-[#110f14]/80 transition-all duration-300 hover:border-[#c5a869]/70 hover:shadow-[0_12px_30px_rgba(0,0,0,0.7)]">
       {/* Media & Badges Container */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#0a080c]">
+      <div className="relative aspect-[4/3.25] w-full overflow-hidden bg-[#0a080c]">
         <Image
           src={imageUrl}
           alt=""
@@ -147,10 +147,10 @@ export function FragranceCard({
           onClick={toggleWishlist}
           disabled={isWishlistPending}
           aria-label={isSaved ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-3 right-3 z-10 grid h-10 w-10 cursor-pointer place-items-center !rounded-none !border-0 !bg-transparent !shadow-none text-[#c2b8a3] transition-colors hover:!bg-transparent hover:text-[#e5c982]"
+          className="absolute top-1 right-2 z-10 grid h-11 w-11 cursor-pointer place-items-center !rounded-none !border-0 !bg-transparent !shadow-none text-[#c2b8a3] transition-colors hover:!bg-transparent hover:text-[#e5c982]"
         >
           <Heart
-            className={`h-5 w-5 transition-transform ${isSaved ? "fill-[#e5c982] text-[#e5c982] scale-110" : ""}`}
+            className={`h-6 w-6 transition-transform ${isSaved ? "fill-[#e5c982] text-[#e5c982] scale-110" : ""}`}
             strokeWidth={1.75}
           />
         </button>
@@ -174,7 +174,7 @@ export function FragranceCard({
           disabled={isCartPending}
           aria-label={`Quick add ${product.name} to bag`}
           title="Add to bag"
-          className="absolute bottom-3 right-3 z-10 grid h-10 w-10 cursor-pointer place-items-center !rounded-none !border-0 !bg-transparent !shadow-none text-[#e5c982] transition-colors hover:!bg-transparent hover:text-[#fff3d1] active:scale-95"
+          className="absolute bottom-3 right-3 z-10 grid h-10 w-10 cursor-pointer place-items-center rounded-md border border-[#c5a869]/75 bg-[#110f14]/70 text-[#e5c982] shadow-[0_4px_12px_rgba(0,0,0,0.35)] transition-colors hover:bg-[#c5a869] hover:text-[#17130d] active:scale-95"
         >
           <ShoppingBag className="h-5 w-5" strokeWidth={1.65} />
         </button>
