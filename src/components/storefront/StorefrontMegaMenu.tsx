@@ -25,10 +25,10 @@ function PlannedItem({ children }: { children: string }) {
 function generateMegaMenuPath(W: number, H: number, x: number, w: number) {
   const R = 20; // Card corner radius
   const h = 34; // Notch height
-  const rf = 12; // Concave fillet radius
+  const rf = 10; // Concave fillet radius
   const rt = 10; // Convex tab top corner radius
 
-  const tabPaddingX = 16;
+  const tabPaddingX = 8;
   const tabLeft = Math.max(R + rf, x - tabPaddingX);
   const tabRight = Math.min(W - R - rf, x + w + tabPaddingX);
 
@@ -354,7 +354,7 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
             aria-hidden="true"
           >
             <path
-              d={generateMegaMenuPath(panelDims.width, panelDims.height, tabMetrics.x, tabMetrics.w)}
+              d={generateMegaMenuPath(panelDims.width, panelDims.height, tabMetrics.x, tabMetrics.w, false)}
               fill="#0e0c10"
               stroke="rgba(229, 193, 88, 0.45)"
               strokeWidth="1"
