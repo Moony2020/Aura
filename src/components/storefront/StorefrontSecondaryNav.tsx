@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { storefrontNavigation } from "@/config/storefront-navigation";
 
-// Only show these items — "Gifts" removed from desktop nav
-const secondaryLabels = ["New Arrivals", "About"] as const;
+// New Arrivals and Makeup (coming soon) in desktop navbar — About is in the sidebar only
+const secondaryLabels = ["New Arrivals", "Makeup"] as const;
 
 export function StorefrontSecondaryNav() {
   const pathname = usePathname();

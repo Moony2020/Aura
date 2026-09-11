@@ -102,7 +102,7 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
         aria-expanded={open}
         aria-controls={drawerId}
         onClick={() => setOpen((v) => !v)}
-        className="p-2 flex flex-col items-center justify-center gap-[5px] text-[#c2b8a3] hover:text-[#e5c982] transition-colors group"
+        className="p-1.5 flex flex-col items-center justify-center gap-[5px] text-[#c2b8a3] hover:text-[#e5c982] transition-colors group"
       >
         {open ? (
           <X className="w-5 h-5" />
@@ -133,10 +133,11 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
               role="dialog"
               aria-modal="true"
               aria-label="Site navigation"
-              className="fixed left-0 top-0 bottom-0 z-[9999] flex w-[340px] max-w-[90vw] overflow-hidden"
+              className="fixed left-0 top-0 bottom-0 z-[9999] flex w-[390px] max-w-[92vw] overflow-hidden"
               style={{
-                background: "#07050b",
-                boxShadow: "8px 0 80px rgba(0,0,0,0.85)",
+                background: "#0c0a0e",
+                borderRight: "1px solid rgba(229, 193, 88, 0.28)",
+                boxShadow: "25px 0 80px rgba(0,0,0,0.95), 4px 0 30px rgba(229,193,88,0.12)",
               }}
             >
               {/* ─── Gold ambient glow ─── */}
@@ -145,29 +146,20 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                 className="pointer-events-none absolute inset-0"
                 style={{
                   background: [
-                    "radial-gradient(ellipse 80% 55% at 85% 5%, rgba(216,185,63,0.16) 0%, transparent 60%)",
-                    "radial-gradient(ellipse 60% 45% at 10% 95%, rgba(160,109,48,0.14) 0%, transparent 55%)",
-                    "radial-gradient(ellipse 40% 30% at 50% 50%, rgba(216,185,63,0.04) 0%, transparent 70%)",
+                    "radial-gradient(ellipse 80% 55% at 85% 5%, rgba(216,185,63,0.18) 0%, transparent 60%)",
+                    "radial-gradient(ellipse 60% 45% at 10% 95%, rgba(160,109,48,0.16) 0%, transparent 55%)",
+                    "radial-gradient(ellipse 50% 40% at 50% 50%, rgba(216,185,63,0.05) 0%, transparent 70%)",
                   ].join(", "),
-                }}
-              />
-              {/* Fine diagonal gold grain */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-[0.025]"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(135deg, #d8b93f 0px, #d8b93f 1px, transparent 1px, transparent 38px)",
                 }}
               />
 
               {/* ─── Left edge: vertical AURA brand (wider + bigger) ─── */}
               <div
-                className="flex w-[52px] shrink-0 flex-col items-center justify-center"
+                className="flex w-[64px] shrink-0 flex-col items-center justify-center"
                 style={{
-                  borderRight: "1px solid rgba(216,185,63,0.15)",
+                  borderRight: "1px solid rgba(229, 193, 88, 0.18)",
                   background:
-                    "linear-gradient(180deg, rgba(216,185,63,0.04) 0%, rgba(0,0,0,0.3) 40%, rgba(160,109,48,0.08) 100%)",
+                    "linear-gradient(180deg, rgba(216,185,63,0.06) 0%, rgba(0,0,0,0.4) 40%, rgba(160,109,48,0.10) 100%)",
                 }}
               >
                 <Link
@@ -182,10 +174,10 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                       writingMode: "vertical-rl",
                       textOrientation: "mixed",
                       transform: "rotate(180deg)",
-                      fontSize: "22px",
-                      letterSpacing: "0.4em",
+                      fontSize: "28px",
+                      letterSpacing: "0.45em",
                       lineHeight: 1,
-                      textShadow: "0 0 20px rgba(216,185,63,0.4)",
+                      textShadow: "0 0 25px rgba(216,185,63,0.45)",
                     }}
                   >
                     AURA
@@ -195,15 +187,15 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
 
               {/* ─── Main nav content ─── */}
               <div className="relative flex flex-1 flex-col overflow-y-auto">
-                {/* Top close button only — no "HAUTE PARFUMERIE" label */}
+                {/* Top close button */}
                 <div className="flex items-center justify-end px-5 py-4">
                   <button
                     type="button"
                     onClick={close}
-                    className="p-1.5 rounded-full text-[#6a5e50] hover:text-[#e5c982] transition-colors"
+                    className="p-1.5 rounded-full text-[#7a6e5e] hover:text-[#e5c982] transition-colors"
                     aria-label="Close navigation"
                   >
-                    <X size={17} />
+                    <X size={18} />
                   </button>
                 </div>
 
@@ -231,15 +223,15 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                         <li
                           key={item.label}
                           style={{
-                            borderBottom: "1px solid rgba(216,185,63,0.07)",
+                            borderBottom: "1px solid rgba(216,185,63,0.08)",
                           }}
                         >
                           {item.planned ? (
                             <span
-                              className={`flex items-center justify-between py-[18px] ${baseClass} text-[#3a3530] cursor-default select-none`}
+                              className={`flex items-center justify-between py-[18px] ${baseClass} text-[#5a524a] cursor-default select-none`}
                             >
                               {item.label}
-                              <span className="text-[8px] uppercase tracking-widest text-[#3a3530] border border-[#3a3530]/40 px-1.5 py-0.5">
+                              <span className="text-[9px] font-semibold uppercase tracking-widest text-[#8a7c65] border border-[#8a7c65]/40 px-2 py-0.5 rounded-sm">
                                 Soon
                               </span>
                             </span>
@@ -248,7 +240,7 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                               <button
                                 type="button"
                                 onClick={() =>
-                                  setExpanded(isExpanded ? null : item.label)
+                                   setExpanded(isExpanded ? null : item.label)
                                 }
                                 className={`flex w-full items-center justify-between py-[18px] ${baseClass} transition-colors ${
                                   active || isExpanded
@@ -261,7 +253,7 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                                   className={`h-4 w-4 transition-transform duration-200 ${
                                     isExpanded
                                       ? "rotate-90 text-[#d8b93f]"
-                                      : "text-[#6a5e50]"
+                                      : "text-[#7a6e5e]"
                                   }`}
                                 />
                               </button>
@@ -269,7 +261,7 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                                 <ul
                                   className="mb-3 space-y-0 pl-4"
                                   style={{
-                                    borderLeft: "1px solid rgba(216,185,63,0.2)",
+                                    borderLeft: "1px solid rgba(216,185,63,0.25)",
                                   }}
                                 >
                                   {item.href && (
@@ -285,7 +277,7 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                                   )}
                                   {subItems.length === 0 && (
                                     <li>
-                                      <span className="block py-2 text-xs italic text-[#4a4240]">
+                                      <span className="block py-2 text-xs italic text-[#7a6e5e]">
                                         Coming soon
                                       </span>
                                     </li>
@@ -327,10 +319,10 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                   </ul>
                 </nav>
 
-                {/* ─── Bottom footer: About link + brand tagline ─── */}
+                {/* ─── Bottom footer: About link + clear brand tagline ─── */}
                 <div
-                  className="px-7 py-5 space-y-3"
-                  style={{ borderTop: "1px solid rgba(216,185,63,0.10)" }}
+                  className="px-7 py-5 space-y-2.5"
+                  style={{ borderTop: "1px solid rgba(216,185,63,0.15)" }}
                 >
                   <Link
                     href="/about"
@@ -338,12 +330,12 @@ export function SidebarNavigation({ collections }: { collections: CollectionSumm
                     className={`block text-xs font-semibold uppercase tracking-[0.2em] transition-colors ${
                       isActive("/about")
                         ? "text-[#d8b93f]"
-                        : "text-[#6a5e50] hover:text-[#c8b990]"
+                        : "text-[#c2b8a3] hover:text-[#ffd875]"
                     }`}
                   >
                     About
                   </Link>
-                  <p className="text-[9px] uppercase tracking-[0.28em] text-[#2e2a25]">
+                  <p className="text-[10px] uppercase font-medium tracking-[0.24em] text-[#948873]">
                     AURA — Luxury Fragrance House
                   </p>
                 </div>

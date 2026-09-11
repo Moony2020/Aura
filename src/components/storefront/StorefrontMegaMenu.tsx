@@ -126,7 +126,7 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
               })}
             </div>
           ))}
-          <Link className="storefront-mega-menu__live-link" href="/fragrances" onClick={() => setOpenMenu(null)}>View all fragrances</Link>
+          <Link className="storefront-mega-menu__live-link storefront-mega-menu__view-all" href="/fragrances" onClick={() => setOpenMenu(null)}>View all fragrances</Link>
         </div>
       )}
       {openMenu === "collections" && (

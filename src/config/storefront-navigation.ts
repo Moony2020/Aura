@@ -8,7 +8,7 @@ export const storefrontNavigation: readonly StorefrontNavigationItem[] = [
   { label: "Fragrances", href: "/fragrances", status: "available" },
   { label: "Collections", href: "/collections", status: "available" },
   { label: "New Arrivals", href: "/new-arrivals", status: "available" },
-  { label: "About", href: "/about", status: "available" },
+  { label: "Makeup", status: "planned" },
 ] as const;
 
 export const storefrontActionLabels = ["Search", "Account", "Shopping bag"] as const;

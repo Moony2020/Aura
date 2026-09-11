@@ -43,28 +43,27 @@ export async function StorefrontHeaderShell() {
 
   return (
     <header className="sticky top-0 z-[100] w-full border-b border-[rgba(229,193,88,0.15)] bg-[rgba(12,10,14,0.28)] backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.15)] transition-all duration-300">
-      <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center min-h-[4.5rem] py-2.5 px-5 sm:px-8 lg:px-12">
+      <div className="w-full flex items-center justify-between min-h-[4.5rem] py-2.5 px-3 sm:px-5 lg:px-6">
 
-        {/* Left: Sidebar trigger + Desktop mega nav */}
-        <div className="flex items-center gap-3">
+        {/* Left: Sidebar trigger + Desktop mega nav (shrink-0 so left side never compresses) */}
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
           {/* Sidebar hamburger (all breakpoints) */}
           <SidebarNavigation collections={collections} />
 
-          {/* Desktop mega-nav links (hidden on mobile) */}
-          <div className="hidden lg:flex items-center gap-1">
+          {/* Desktop mega-nav links (hidden on mobile/tablet) */}
+          <div className="hidden xl:flex items-center gap-6 shrink-0">
             <StorefrontMegaMenu collections={collections} />
             <StorefrontSecondaryNav />
           </div>
         </div>
 
         {/* Center: Brand Logo */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center px-4 shrink-0">
           <StorefrontBrandLogo />
         </div>
 
-        {/* Right: Action icons */}
-        <div className="flex items-center justify-end gap-0.5 sm:gap-1" aria-label="Storefront actions">
-          <StorefrontWishlistAction />
+        {/* Right: Action icons (Search, Account, Wishlist, Cart) */}
+        <div className="flex items-center justify-end gap-0.5 sm:gap-1 shrink-0" aria-label="Storefront actions">
           <StorefrontSearchAction />
           <Link
             className="p-2 text-[#c2b8a3] hover:text-[#e5c982] transition-colors flex items-center justify-center cursor-pointer"
@@ -74,6 +73,7 @@ export async function StorefrontHeaderShell() {
           >
             <User className="w-5 h-5" strokeWidth={1.5} />
           </Link>
+          <StorefrontWishlistAction />
           <StorefrontCartAction />
         </div>
       </div>

@@ -300,29 +300,31 @@ body {
 
 .storefront-mega-menu {
   position: absolute;
-  top: calc(100% + 0.25rem);
+  top: calc(100% + 0.6rem);
   left: 0;
-  z-index: 20;
+  right: auto;
+  z-index: 50;
   display: grid;
-  grid-template-columns: repeat(3, minmax(8rem, 1fr));
-  gap: clamp(1.5rem, 3vw, 3.5rem);
-  width: min(46rem, 90vw);
-  padding: 2rem 2.3rem 2.2rem;
+  grid-template-columns: repeat(3, minmax(7.5rem, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 2.75rem);
+  width: min(39rem, calc(100vw - 3rem));
+  padding: 1.75rem 2rem 2rem;
   border: 1px solid rgba(229, 193, 88, 0.28);
-  background: #151210;
-  box-shadow: 0 1.5rem 3rem rgba(20, 13, 8, 0.28);
+  background: #110e0c;
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.75), 0 0 30px rgba(229, 193, 88, 0.08);
   color: #f4efe7;
+  border-radius: 4px;
 }
 
 .storefront-mega-menu::before {
   position: absolute;
   top: -0.4rem;
-  left: 4.8rem;
+  left: 2.3rem;
   width: 0.75rem;
   height: 0.75rem;
   border-top: 1px solid rgba(229, 193, 88, 0.28);
   border-left: 1px solid rgba(229, 193, 88, 0.28);
-  background: #151210;
+  background: #110e0c;
   content: "";
   transform: rotate(45deg);
 }
@@ -370,13 +372,13 @@ body {
 
 .storefront-mega-menu--collections {
   grid-template-columns: minmax(10rem, 1fr) minmax(12rem, 1.25fr);
-  left: 3.5rem;
+  left: 0;
   right: auto;
-  width: min(37rem, 65vw);
+  width: min(36rem, calc(100vw - 3rem));
 }
 
 .storefront-mega-menu--collections::before {
-  left: 5rem;
+  left: 7.8rem;
   right: auto;
 }
 
@@ -551,7 +553,7 @@ body {
   text-transform: uppercase;
 }
 
-.storefront-mega-menu__live-link {
+.storefront-mega-menu__view-all {
   grid-column: 1 / -1;
   border-top: 1px solid rgba(229, 193, 88, 0.2);
   padding-top: 1rem;
@@ -1436,10 +1438,7 @@ body {
   font-size: clamp(2.8rem, 6vw, 6rem);
 }
 
-.storefront-mega-menu:not(.storefront-mega-menu--collections) {
-  width: min(34rem, calc(100vw - 2rem));
-  gap: 1.15rem;
-}
+
 
 @media (max-width:800px) {
   .fragrance-catalog-hero__layout {
@@ -1821,51 +1820,6 @@ body {
 
 .storefront-mega-trigger__chevron {
   stroke: currentColor;
-}
-
-.storefront-mega-menu {
-  top: calc(100% + .7rem);
-  left: auto;
-  right: -2rem;
-  z-index: 100;
-  width: min(50rem, calc(100vw - 2rem));
-  padding: 1.35rem 1.75rem 1.5rem;
-  background: #111010;
-  transform: none;
-}
-
-.storefront-mega-menu::before {
-  left: 46%;
-  right: auto;
-}
-
-.storefront-mega-menu:not(.storefront-mega-menu--collections) {
-  right: -4rem;
-  width: min(29rem, calc(100vw - 2rem));
-  gap: 1.5rem;
-  padding-inline: 1.2rem;
-}
-
-.storefront-mega-menu:not(.storefront-mega-menu--collections)::before {
-  left: 45%;
-}
-
-.storefront-mega-menu--collections {
-  right: -13rem;
-  width: min(34rem, calc(100vw - 2rem));
-  gap: 1.25rem;
-  padding: 1rem 1.25rem 1.1rem;
-}
-
-.storefront-mega-menu--collections::before {
-  left: 51%;
-  right: auto;
-}
-
-.storefront-mega-menu--collections .storefront-mega-menu__editorial {
-  font-size: 1rem;
-  line-height: 1.15;
-  padding-left: 1.15rem;
 }
 
 .fragrance-campaign-page {
