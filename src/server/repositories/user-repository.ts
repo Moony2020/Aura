@@ -1,0 +1,5 @@
+import type { ClientSession } from "mongodb";
+import type { Address, AddressCreateInput, AddressUpdateInput, User, UserCreateInput, UserProfileUpdate, UserStatusUpdate } from "@/domain/user/user.schema";
+
+export interface UserRepository { findById(id: string, session?: ClientSession): Promise<User | null>; findByNormalizedEmail(email: string, session?: ClientSession): Promise<User | null>; create(input: UserCreateInput, session?: ClientSession): Promise<User>; activatePendingById(id: string, emailVerifiedAt: Date, session?: ClientSession): Promise<User | null>; updateProfile(id: string, input: UserProfileUpdate): Promise<User>; updateStatus(id: string, input: UserStatusUpdate): Promise<User>; }
+export interface AddressRepository { listForUser(userId: string): Promise<Address[]>; findForUser(userId: string, addressId: string): Promise<Address | null>; createForUser(userId: string, input: Omit<AddressCreateInput, "userId">): Promise<Address>; updateForUser(userId: string, addressId: string, input: AddressUpdateInput): Promise<Address>; deleteForUser(userId: string, addressId: string): Promise<void>; }

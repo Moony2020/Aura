@@ -1,12 +1,32 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Search, ShoppingBag, User, Menu, X } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Search, ShoppingBag, User, Menu, X, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { fragranceAudienceNavigation, storefrontNavigation } from "@/config/storefront-navigation";
+
+const homeCollectionLinks = [
+  { label: "View all collections", href: "/collections" },
+  { label: "The feminine edit", href: "/fragrances/women" },
+  { label: "The masculine edit", href: "/fragrances/men" },
+  { label: "The shared edit", href: "/fragrances/unisex" },
+] as const;
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<"Fragrances" | "Collections" | null>(null);
+  const navigationRef = useRef<HTMLElement>(null);
+  const closeMenuTimerRef = useRef<number | null>(null);
+
+  const isNavigationItemActive = (item: (typeof storefrontNavigation)[number]) => {
+    if (item.label === "Maison") return pathname === "/";
+    if (!item.href) return false;
+    return pathname === item.href || pathname.startsWith(`${item.href}/`);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,12 +40,45 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    function closeOnOutsideClick(event: PointerEvent) {
+      if (navigationRef.current && !navigationRef.current.contains(event.target as Node)) setOpenMenu(null);
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpenMenu(null);
+    }
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeMenuTimerRef.current) window.clearTimeout(closeMenuTimerRef.current);
+    };
+  }, []);
+
+  function openNavigationMenu(menu: "Fragrances" | "Collections") {
+    if (closeMenuTimerRef.current) window.clearTimeout(closeMenuTimerRef.current);
+    setOpenMenu(menu);
+  }
+
+  function closeNavigationMenuSoon() {
+    if (closeMenuTimerRef.current) window.clearTimeout(closeMenuTimerRef.current);
+    closeMenuTimerRef.current = window.setTimeout(() => setOpenMenu(null), 140);
+  }
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
         isScrolled
-          ? "bg-[#080809]/45 backdrop-blur-xl py-3.5 shadow-[0_10px_35px_rgba(0,0,0,0.35)]"
-          : "bg-gradient-to-b from-[#080809]/60 via-[#080809]/20 to-transparent backdrop-blur-[4px] py-5"
+          ? "bg-[#080809]/68 backdrop-blur-xl py-3.5 shadow-[0_10px_35px_rgba(0,0,0,0.35)]"
+          : "bg-[#080809]/42 backdrop-blur-md py-5 border-b border-[#D4AF37]/15"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
@@ -38,46 +91,7 @@ export default function Navbar() {
           }}
           className="flex items-center gap-2.5 group cursor-pointer"
         >
-          {/* Flame / Perfume-Drop Emblem SVG */}
-          <svg
-            width="22"
-            height="22"
-            className="w-5 h-5 sm:w-[22px] sm:h-[22px] opacity-90 group-hover:scale-105 transition-transform duration-500 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FFF3D1" />
-                <stop offset="50%" stopColor="#E5C158" />
-                <stop offset="100%" stopColor="#B8860B" />
-              </linearGradient>
-            </defs>
-            {/* Curling wisp at the top */}
-            <path
-              d="M12.8 2.2c.9.9 1.2 2 .5 2.7-.6.6-1.5.4-1.7-.3-.2-.6.3-1 .8-.7"
-              stroke="url(#goldGrad)"
-              strokeWidth="1.1"
-              strokeLinecap="round"
-              fill="none"
-            />
-            {/* Outer teardrop flame contour */}
-            <path
-              d="M12 2C7.5 7.5 4 11.5 4 16a8 8 0 0 0 16 0c0-4.5-3.5-8.5-8-14Z"
-              stroke="url(#goldGrad)"
-              strokeWidth="1.7"
-              fill="none"
-            />
-            {/* Inner S-curve flame detail */}
-            <path
-              d="M13.4 10.2c.9.8 1.4 1.8 1.4 2.8a2.8 2.8 0 0 1-2.8 2.8c-.9 0-1.5-.5-1.5-1.1 0-.5.4-.8.9-.7"
-              stroke="url(#goldGrad)"
-              strokeWidth="1.3"
-              strokeLinecap="round"
-              fill="none"
-            />
-          </svg>
+
           <div className="flex flex-col items-start leading-none">
             <span className="text-xl sm:text-2xl font-brand tracking-[0.35em] gold-gradient-text font-bold drop-shadow-[0_2px_14px_rgba(229,193,88,0.4)]">
               AURA
@@ -90,39 +104,93 @@ export default function Navbar() {
 
         {/* Right Side: Navigation Links & Actions */}
         <div className="flex items-center gap-8 lg:gap-12">
-          <nav className="hidden lg:flex items-center space-x-7 xl:space-x-9 text-[11px] xl:text-[12px] uppercase tracking-[0.25em] text-[#E5D7C0]/90 font-light">
-            <a
-              href="#hero"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className="hover:text-[#E5C158] transition-colors duration-300 relative group py-1"
-            >
-              Maison
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E5C158] transition-all duration-300 group-hover:w-full" />
-            </a>
-            <a
-              href="#world-1"
-              className="hover:text-[#E5C158] transition-colors duration-300 relative group py-1"
-            >
-              Fragrances
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E5C158] transition-all duration-300 group-hover:w-full" />
-            </a>
-            <a
-              href="#collections"
-              className="hover:text-[#E5C158] transition-colors duration-300 relative group py-1"
-            >
-              Collections
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E5C158] transition-all duration-300 group-hover:w-full" />
-            </a>
-            <a
-              href="#about"
-              className="hover:text-[#E5C158] transition-colors duration-300 relative group py-1"
-            >
-              About
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E5C158] transition-all duration-300 group-hover:w-full" />
-            </a>
+          <nav ref={navigationRef} className="hidden lg:flex items-center gap-5 xl:gap-7 text-[11px] xl:text-[12px] uppercase tracking-[0.2em] text-[#E5D7C0]/90 font-light" aria-label="Home navigation">
+            {storefrontNavigation.map((item) => {
+              const isPlanned = item.status === "planned";
+              const hasMenu = item.label === "Fragrances" || item.label === "Collections";
+              const isActive = isNavigationItemActive(item);
+              const className = `hover:text-[#E5C158] transition-colors duration-300 relative group h-6 inline-flex items-center gap-1 whitespace-nowrap ${isActive ? "text-[#E5C158]" : ""}`;
+              const content = (
+                <>
+                  {item.label}
+                  {hasMenu && <ChevronDown size={12} strokeWidth={1.5} aria-hidden="true" />}
+                  {!isPlanned && <span className={`absolute bottom-0 left-0 h-[1px] bg-[#E5C158] transition-all duration-300 group-hover:w-full ${isActive ? "w-full" : "w-0"}`} />}
+                </>
+              );
+
+              if (isPlanned) {
+                return (
+                  <span key={item.label} className={`${className} cursor-default`} title="Coming soon" aria-disabled="true">
+                    {content}
+                  </span>
+                );
+              }
+
+              if (hasMenu) {
+                const menuLabel = item.label as "Fragrances" | "Collections";
+                const links = item.label === "Fragrances"
+                  ? [
+                      { label: "View all fragrances", href: "/fragrances" },
+                      ...fragranceAudienceNavigation,
+                    ]
+                  : homeCollectionLinks;
+                const isOpen = openMenu === menuLabel;
+
+                return (
+                  <div
+                    key={item.label}
+                    className="home-nav-menu"
+                    onMouseEnter={() => openNavigationMenu(menuLabel)}
+                    onMouseLeave={closeNavigationMenuSoon}
+                    onFocus={() => openNavigationMenu(menuLabel)}
+                  >
+                    <button
+                      type="button"
+                      className={className}
+                      aria-current={isActive ? "page" : undefined}
+                      aria-expanded={isOpen}
+                      aria-controls={`home-${item.label.toLowerCase()}-menu`}
+                      onClick={() => setOpenMenu((current) => current === menuLabel ? null : menuLabel)}
+                    >
+                      {content}
+                    </button>
+                    {isOpen && (
+                      <div id={`home-${item.label.toLowerCase()}-menu`} className="home-nav-menu__panel">
+                        <p>{item.label === "Fragrances" ? "Discover by wearer" : "The Maison edits"}</p>
+                        {links.map((link) => (
+                          <Link key={link.href + link.label} href={link.href} onClick={() => setOpenMenu(null)}>
+                            {link.label}<span aria-hidden="true">→</span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              if (item.label === "Maison") {
+                return (
+                  <a
+                    key={item.label}
+                    href="#hero"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className={className}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {content}
+                  </a>
+                );
+              }
+
+              return (
+                <Link key={item.label} href={item.href ?? "#"} className={className} aria-current={isActive ? "page" : undefined}>
+                  {content}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Actions (Search, Account, Bag) */}
@@ -191,34 +259,24 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#0D0D0E]/95 backdrop-blur-xl border-b border-[#D4AF37]/20 px-8 py-8 space-y-6 text-center animate-fadeIn">
           <div className="flex flex-col space-y-5 text-sm uppercase tracking-[0.25em] text-[#E5D7C0]">
-            <a
-              href="#hero"
-              onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-[#E5C158] transition-colors"
-            >
-              Maison
-            </a>
-            <a
-              href="#world-1"
-              onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-[#E5C158] transition-colors"
-            >
-              Fragrances
-            </a>
-            <a
-              href="#collections"
-              onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-[#E5C158] transition-colors"
-            >
-              Collections
-            </a>
-            <a
-              href="#about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-[#E5C158] transition-colors"
-            >
-              About
-            </a>
+            {storefrontNavigation.map((item) => {
+              const hasMenu = item.label === "Fragrances" || item.label === "Collections";
+              const isActive = isNavigationItemActive(item);
+              const content = (
+                <span className="inline-flex items-center justify-center gap-1">
+                  {item.label}
+                  {hasMenu && <ChevronDown size={13} strokeWidth={1.5} aria-hidden="true" />}
+                </span>
+              );
+
+              if (item.status === "planned") {
+                return <span key={item.label} className="text-[#E5D7C0]/70" title="Coming soon">{content}</span>;
+              }
+              if (item.label === "Maison") {
+                return <a key={item.label} href="#hero" onClick={() => setMobileMenuOpen(false)} className={`hover:text-[#E5C158] transition-colors ${isActive ? "text-[#E5C158]" : ""}`} aria-current={isActive ? "page" : undefined}>{content}</a>;
+              }
+              return <Link key={item.label} href={item.href ?? "#"} onClick={() => setMobileMenuOpen(false)} className={`hover:text-[#E5C158] transition-colors ${isActive ? "text-[#E5C158]" : ""}`} aria-current={isActive ? "page" : undefined}>{content}</Link>;
+            })}
           </div>
         </div>
       )}

@@ -32,9 +32,9 @@ const config: Config = {
         }
       },
       fontFamily: {
-        serif: ["Cormorant Garamond", "Cinzel", "Playfair Display", "Georgia", "serif"],
-        sans: ["Montserrat", "Inter", "-apple-system", "sans-serif"],
-        aura: ["Cinzel", "serif"],
+        serif: ["var(--font-cormorant)", "Cormorant Garamond", "Cinzel", "Playfair Display", "Georgia", "serif"],
+        sans: ["var(--font-montserrat)", "Montserrat", "Inter", "-apple-system", "sans-serif"],
+        aura: ["var(--font-cinzel)", "Cinzel", "serif"],
       },
       backgroundImage: {
         'gold-gradient': 'linear-gradient(135deg, #F5E4B5 0%, #D4AF37 50%, #AA8010 100%)',

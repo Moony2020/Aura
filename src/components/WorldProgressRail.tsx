@@ -2,14 +2,12 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-const worldIds = ["world-1", "world-2", "world-3", "world-4", "world-5", "world-6"];
+const worldIds = ["world-1", "world-2", "world-3", "world-4"];
 const WORLD_LABELS = [
   "Élixir de Rose",
   "Noir Cashmere",
   "Citrus Vetiver",
   "Amber Mystique",
-  "Jasmine Nocturne",
-  "Golden Santal",
 ];
 
 const STEP_PX = 42; // vertical spacing between ticks

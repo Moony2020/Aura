@@ -1,0 +1,3 @@
+import type { GiftCard, GiftCardTransaction } from "../../domain/gift-card/gift-card.schema.ts";
+export type IssuedGiftCard = { card: GiftCard; rawCode: string; transaction: GiftCardTransaction };
+export interface GiftCardRepository { findByCodeHash(hash: string): Promise<GiftCard | null>; issue(input: { codeHash: string; initialBalanceMinor: number; currency: string }): Promise<IssuedGiftCard>; redeem(cardId: string, amountMinor: number, reference: string): Promise<{ card: GiftCard; transaction: GiftCardTransaction; redeemedAmountMinor: number }>; getTransactionByReference(reference: string): Promise<GiftCardTransaction | null>; count(): Promise<number>; }

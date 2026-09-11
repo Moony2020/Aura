@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Compass } from "lucide-react";
+import CinematicAcquireButton from "./CinematicAcquireButton";
 
 type Layout = "left" | "right";
 type Entrance = "up" | "side" | "scale" | "blur";
@@ -16,7 +17,6 @@ interface FragranceWorldSectionProps {
   classification: string;
   description: string;
   notes: { top: string; heart: string; base: string };
-  price: string;
   accent: string;
   layout: Layout;
   entrance: Entrance;
@@ -32,7 +32,6 @@ export default function FragranceWorldSection({
   classification,
   description,
   notes,
-  price,
   accent,
   layout,
   entrance,
@@ -226,12 +225,11 @@ export default function FragranceWorldSection({
           )}
 
           <div className={`flex items-center gap-4 pt-4 ${ctaJustify}`}>
-            <button
-              type="button"
+            <CinematicAcquireButton
+              worldNumber={Number(worldNumber)}
               className="px-9 py-4 rounded-full bg-[#D4AF37] text-[#080809] text-xs uppercase tracking-[0.25em] font-semibold whitespace-nowrap hover:bg-[#FFF3D1] transition-colors duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)]"
-            >
-              Acquire — {price}
-            </button>
+              accent={accent}
+            />
             <button
               type="button"
               className="px-7 py-4 rounded-full border text-[#FFF3D1] text-xs uppercase tracking-[0.25em] whitespace-nowrap hover:bg-[#121215]/50 transition-all duration-300"
