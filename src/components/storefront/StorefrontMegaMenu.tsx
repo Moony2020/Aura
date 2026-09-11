@@ -24,8 +24,8 @@ function PlannedItem({ children }: { children: string }) {
 
 function generateMegaMenuPath(W: number, H: number, x: number, w: number) {
   const R = 20; // Card corner radius
-  const h = 34; // Notch height
-  const rf = 10; // Concave fillet radius
+  const h = 48; // Notch height extending upwards from bottom of navbar
+  const rf = 12; // Concave fillet radius
   const rt = 10; // Convex tab top corner radius
 
   const tabPaddingX = 8;

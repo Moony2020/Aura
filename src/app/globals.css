@@ -248,7 +248,7 @@ body {
 /* ─── Mega Menu Dropdown Panel (Unified Single SVG Backdrop Container) ─── */
 .storefront-mega-panel {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 1.15rem);
   left: -2.75rem;
   z-index: 100;
   display: grid;
