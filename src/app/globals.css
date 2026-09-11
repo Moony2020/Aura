@@ -89,7 +89,7 @@ body {
 .storefront-secondary-nav ul {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.85rem;
   list-style: none;
 }
 
@@ -187,32 +187,40 @@ body {
 .storefront-mega-nav__triggers {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.85rem;
   position: relative;
 }
 
 /* ─── Mega Nav Trigger ─── */
 .storefront-mega-trigger {
   position: relative;
-  border: 1px solid transparent;
+  border: none;
   background: transparent;
   cursor: pointer;
   font: inherit;
   font-size: 0.65rem;
   letter-spacing: 0.08em;
-  padding: 0.4rem 0.65rem;
+  padding: 0;
   margin: 0;
-  height: 2.2rem;
+  height: 1.5rem;
   text-transform: uppercase;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
   line-height: 1;
-  border-radius: 9999px;
   color: rgba(245, 228, 181, 0.75);
   transition: all 180ms ease;
-  z-index: 1;
+  z-index: 102;
+}
+
+.storefront-mega-trigger-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.1rem;
+  border: none;
+  background: transparent;
+  transition: all 180ms ease;
 }
 
 .storefront-mega-trigger::after {
@@ -220,55 +228,24 @@ body {
   content: none !important;
 }
 
-.storefront-mega-trigger:hover,
-.storefront-mega-trigger:focus-visible {
+.storefront-mega-trigger:hover .storefront-mega-trigger-pill,
+.storefront-mega-trigger:focus-visible .storefront-mega-trigger-pill {
   color: #ffdf78;
-  background: rgba(229, 193, 88, 0.08);
-  border-color: rgba(229, 193, 88, 0.2);
+  background: transparent;
+  border-color: transparent;
+}
+
+.storefront-mega-trigger--active .storefront-mega-trigger-pill {
+  color: #ffd875 !important;
+  background: transparent !important;
+  border-color: transparent !important;
 }
 
 .storefront-mega-trigger--active {
-  color: #ffd875 !important;
-  background: #0e0c10 !important;
-  border: 1px solid rgba(229, 193, 88, 0.4) !important;
-  border-bottom: none !important;
-  border-radius: 12px 12px 0 0 !important;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.5) !important;
-  z-index: 110 !important;
-  margin-bottom: -1px;
+  z-index: 105 !important;
 }
 
-/* Mask to ensure NO horizontal line between tab and card */
-.storefront-mega-tab-mask {
-  position: absolute;
-  bottom: -2px;
-  left: -1px;
-  right: -1px;
-  height: 4px;
-  background: #0e0c10;
-  z-index: 115;
-  pointer-events: none;
-}
-
-/* Concave Fillet Wings on Active Tab */
-.storefront-mega-wing {
-  position: absolute;
-  bottom: -1px;
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-  z-index: 112;
-}
-
-.storefront-mega-wing--left {
-  left: -14px;
-}
-
-.storefront-mega-wing--right {
-  right: -14px;
-}
-
-/* ─── Mega Menu Dropdown Panel (AURA Luxury Dark Obsidian & Gold Palette) ─── */
+/* ─── Mega Menu Dropdown Panel (Unified Single SVG Backdrop Container) ─── */
 .storefront-mega-panel {
   position: absolute;
   top: 100%;
@@ -279,13 +256,23 @@ body {
   gap: 2.25rem;
   width: min(52rem, calc(100vw - 3rem));
   padding: 2rem 2.25rem;
-  border: 1px solid rgba(229, 193, 88, 0.4);
-  background: #0e0c10;
-  border-radius: 1.25rem;
-  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(229, 193, 88, 0.08);
+  border: none;
+  background: transparent;
   color: #f4efe7;
-  backdrop-filter: blur(20px);
+  filter: drop-shadow(0 35px 80px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 35px rgba(229, 193, 88, 0.08));
   animation: megaPanelFadeIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Single Unified SVG Backdrop */
+.storefront-mega-backdrop-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: -1;
 }
 
 @keyframes megaPanelFadeIn {
@@ -1230,44 +1217,6 @@ body {
   align-items: center;
 }
 
-.storefront-secondary-nav a {
-  position: relative;
-  color: #f5e4b5;
-  text-decoration: none;
-}
-
-.storefront-secondary-nav a::after {
-  position: absolute;
-  right: 0;
-  bottom: 0px;
-  left: 0;
-  height: 1px;
-  background: #E5C158;
-  content: "";
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 180ms ease;
-}
-
-.storefront-secondary-nav a:hover::after,
-.storefront-secondary-nav a:focus-visible::after,
-.storefront-secondary-nav a[aria-current="page"]::after {
-  transform: scaleX(1);
-}
-
-.storefront-secondary-nav a:focus-visible {
-  outline: 2px solid #9c7336;
-  outline-offset: 0.35rem;
-}
-
-.storefront-secondary-nav .storefront-nav-item--planned {
-  color: rgba(245, 228, 181, .72);
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
 @media (max-width: 1100px) {
   .storefront-primary-nav {
     display: none;
@@ -2190,64 +2139,6 @@ body {
 /* Editorial campaign refinement */
 .storefront-header__inner {
   align-items: center;
-}
-
-.storefront-primary-nav ul,
-.storefront-mega-nav__triggers,
-.storefront-secondary-nav ul {
-  height: 2.25rem;
-  align-items: center;
-}
-
-.storefront-primary-nav a,
-.storefront-mega-trigger,
-.storefront-secondary-nav a,
-.storefront-secondary-nav .storefront-nav-item--planned {
-  display: inline-flex;
-  align-items: center;
-  height: 2.25rem;
-  line-height: 1;
-  padding-block: 0;
-}
-
-.storefront-primary-nav a,
-.storefront-mega-trigger,
-.storefront-secondary-nav a,
-.storefront-primary-nav .storefront-nav-item--planned,
-.storefront-secondary-nav .storefront-nav-item--planned {
-  color: rgba(245, 228, 181, 0.72);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.12em;
-  text-decoration: none;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.storefront-primary-nav a:hover,
-.storefront-primary-nav a:focus-visible,
-.storefront-mega-trigger:hover,
-.storefront-mega-trigger:focus-visible,
-.storefront-mega-trigger[aria-expanded="true"],
-.storefront-mega-trigger[aria-current="page"],
-.storefront-secondary-nav a:hover,
-.storefront-secondary-nav a:focus-visible,
-.storefront-secondary-nav a[aria-current="page"] {
-  color: #ffdf78;
-}
-
-.storefront-mega-nav__triggers {
-  gap: clamp(1rem, 1.7vw, 2.25rem);
-}
-
-.storefront-secondary-nav ul {
-  gap: clamp(1rem, 1.7vw, 2.25rem);
-}
-
-.storefront-mega-trigger {
-  position: relative;
 }
 
 .fragrance-campaign-hero {

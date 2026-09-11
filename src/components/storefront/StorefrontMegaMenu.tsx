@@ -28,8 +28,9 @@ function generateMegaMenuPath(W: number, H: number, x: number, w: number) {
   const rf = 12; // Concave fillet radius
   const rt = 10; // Convex tab top corner radius
 
-  const tabLeft = Math.max(R + rf, x);
-  const tabRight = Math.min(W - R - rf, tabLeft + w);
+  const tabPaddingX = 16;
+  const tabLeft = Math.max(R + rf, x - tabPaddingX);
+  const tabRight = Math.min(W - R - rf, x + w + tabPaddingX);
 
   return [
     `M ${R} 0`,
@@ -202,9 +203,26 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
           className="storefront-mega-panel"
           role="region"
           aria-label="Fragrances menu"
+          ref={panelRef}
           onMouseEnter={handleDropdownMouseEnter}
           onMouseLeave={closeMenuWithDelay}
         >
+          {/* Single Unified Continuous SVG Background & Border */}
+          <svg
+            className="storefront-mega-backdrop-svg"
+            width={panelDims.width}
+            height={panelDims.height}
+            viewBox={`0 0 ${panelDims.width} ${panelDims.height}`}
+            aria-hidden="true"
+          >
+            <path
+              d={generateMegaMenuPath(panelDims.width, panelDims.height, tabMetrics.x, tabMetrics.w)}
+              fill="#0e0c10"
+              stroke="rgba(229, 193, 88, 0.45)"
+              strokeWidth="1"
+            />
+          </svg>
+
           {/* Left Columns */}
           <div className="storefront-mega-columns">
             {/* Column 1: By Wearer & Curated */}
@@ -323,9 +341,25 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
           className="storefront-mega-panel"
           role="region"
           aria-label="Collections menu"
+          ref={panelRef}
           onMouseEnter={handleDropdownMouseEnter}
           onMouseLeave={closeMenuWithDelay}
         >
+          {/* Single Unified Continuous SVG Background & Border */}
+          <svg
+            className="storefront-mega-backdrop-svg"
+            width={panelDims.width}
+            height={panelDims.height}
+            viewBox={`0 0 ${panelDims.width} ${panelDims.height}`}
+            aria-hidden="true"
+          >
+            <path
+              d={generateMegaMenuPath(panelDims.width, panelDims.height, tabMetrics.x, tabMetrics.w)}
+              fill="#0e0c10"
+              stroke="rgba(229, 193, 88, 0.45)"
+              strokeWidth="1"
+            />
+          </svg>
           {/* Left Columns */}
           <div className="storefront-mega-columns storefront-mega-columns--single">
             <div className="storefront-mega-group">

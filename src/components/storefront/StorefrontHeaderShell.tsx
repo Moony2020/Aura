@@ -46,12 +46,12 @@ export async function StorefrontHeaderShell() {
       <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center min-h-[4.5rem] py-2.5 px-3 sm:px-5 lg:px-6">
 
         {/* Left: Sidebar trigger + Desktop mega nav */}
-        <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
+        <div className="flex items-center gap-4 min-w-0">
           {/* Sidebar hamburger (all breakpoints) */}
           <SidebarNavigation collections={collections} />
 
           {/* Desktop mega-nav links (hidden on mobile/tablet) */}
-          <div className="hidden xl:flex items-center gap-2 min-w-0">
+          <div className="hidden xl:flex items-center gap-6 min-w-0">
             <StorefrontMegaMenu collections={collections} />
             <StorefrontSecondaryNav />
           </div>
