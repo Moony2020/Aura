@@ -8,7 +8,7 @@ export function StorefrontBrandLogo() {
   const pathname = usePathname();
 
   const brandContent = (
-    <span className="text-xl sm:text-2xl font-serif tracking-[0.38em] gold-gradient-text font-bold drop-shadow-[0_2px_14px_rgba(229,193,88,0.4)] select-none leading-none">
+    <span className="text-2xl sm:text-3xl font-serif tracking-[0.38em] gold-gradient-text font-bold drop-shadow-[0_2px_18px_rgba(229,193,88,0.5)] select-none leading-none">
       AURA
     </span>
   );
