@@ -10,3 +10,4 @@ export const isPlausibleGuestWishlistToken = (value: string | null | undefined):
 export const hashGuestWishlistToken = (token: string) => createHash("sha256").update(token).digest("hex");
 export const guestWishlistExpiresAt = (now = new Date()) => new Date(now.getTime() + GUEST_WISHLIST_TTL_DAYS * 86400000);
 export const buildGuestWishlistCookie = (token: string, expires: Date): GuestWishlistCookieDescriptor => ({ name: GUEST_WISHLIST_COOKIE_NAME, value: token, options: { httpOnly: true, sameSite: "lax", path: "/", secure: process.env.NODE_ENV === "production", expires } });
+export const buildExpiredGuestWishlistCookie = (): GuestWishlistCookieDescriptor => buildGuestWishlistCookie("", new Date(0));

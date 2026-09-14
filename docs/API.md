@@ -18,7 +18,7 @@ Stage 4.1 defines no auth endpoint or runtime. The future boundary is Auth.js fo
 
 Initial method scope is email/password Credentials only. Planned route families are narrowly scoped account/auth handlers for registration and email verification, login/logout/session operations, and password recovery; exact routes belong to Stages 4.2–4.4. OAuth, social login, magic links, passkeys, and provider Accounts are not implied.
 
-The accepted initial strategy is Auth.js Credentials + JWT Sessions. JWT identifies the canonical `userId` and carries the comparison `sessionVersion`; protected services must reload the current `authCredentials` and canonical AURA User, enforce status/verification, and apply role/ownership policy. JWT role/status/permission claims are not authoritative. Future account responses are private/no-store as appropriate, cookie-authenticated mutations receive a CSRF review, and registration/login/recovery errors use safe non-enumerating messages. Cart/Wishlist guest-to-user merge is deferred to Stage 4.8 and must call shared services after successful authentication.
+The accepted initial strategy is Auth.js Credentials + JWT Sessions. JWT identifies the canonical `userId` and carries the comparison `sessionVersion`; protected services must reload the current `authCredentials` and canonical AURA User, enforce status/verification, and apply role/ownership policy. JWT role/status/permission claims are not authoritative. Future account responses are private/no-store as appropriate, cookie-authenticated mutations receive a CSRF review, and registration/login/recovery errors use safe non-enumerating messages. Cart/Wishlist guest-to-user merge is implemented in Stage 4.8 through the internal post-login handoff and calls shared services only after successful authentication.
 
 ## Authentication Persistence Boundary — Stage 4.2 P1
 
@@ -116,3 +116,7 @@ Stage 3.6 adds the controlled storefront purchase-entry and quantity Server Acti
 Both actions use strict Zod validation and delegate to `CartService`. They do not accept cart IDs, owner identifiers, prices, SKUs as authority, inventory counts, raw guest tokens, guest token hashes, or MongoDB update objects. The service resolves Product/Variant ownership of the submitted variant, current Inventory state, current minor-unit price, and guest ownership from the HttpOnly `aura_guest_cart` cookie.
 
 UNTRACKED and OUT_OF_STOCK variants cannot be newly added or incremented under the current policy. Decrement/remove remains available for stale cart lines. No `/api/cart` REST route, checkout route/action, payment provider endpoint, auth endpoint, or cinematic `ACQUIRE` transport was introduced.
+
+## Stage 4.7 — Protected Order History
+
+The Account Order History surface is read-only and uses server-only ownership-scoped list/detail reads. Ownership is derived from Auth.js plus `sessionVersion` and the canonical User; browser input cannot select authority fields. Responses use the existing `orderNumber` and stored historical snapshots/totals. No customer status/payment/fulfillment mutation, Reorder, checkout, or Stage 4.8 merge endpoint is provided.

@@ -23,5 +23,7 @@ export class MongoOrderRepository implements OrderRepository {
   async create(input: OrderCreateInput) { const parsed = orderCreateSchema.parse(input); const now = new Date(); const row: OrderDoc = { ...parsed, _id: new ObjectId(), createdAt: now, updatedAt: now }; await (await this.c()).insertOne(row); return toOrder(row); }
   async findByOrderNumber(orderNumber: string) { const row = await (await this.c()).findOne({ orderNumber }); return row ? toOrder(row) : null; }
   async findById(id: string) { const row = await (await this.c()).findOne({ _id: new ObjectId(id) }); return row ? toOrder(row) : null; }
+  async listForUser(userId: string) { return (await (await this.c()).find({ userId }).sort({ createdAt: -1, _id: -1 }).toArray()).map(toOrder); }
+  async findForUser(userId: string, orderId: string) { const row = await (await this.c()).findOne({ _id: new ObjectId(orderId), userId }); return row ? toOrder(row) : null; }
   async transitionStatus(id: string, from: OrderStatus, to: OrderStatus) { orderStatusTransitionSchema.parse({ from, to }); const row = await (await this.c()).findOneAndUpdate({ _id: new ObjectId(id), status: from }, { $set: { status: to, updatedAt: new Date() } }, { returnDocument: "after" }); if (!row) throw new Error(`Order transition failed: expected ${from}.`); return toOrder(row); }
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 export function PasswordResetRequestForm() {
   const [email, setEmail] = useState("");
@@ -38,7 +39,10 @@ export function PasswordResetRequestForm() {
         </p>
         <button className="auth-form__submit" type="submit" disabled={state === "SENDING"}>{state === "SENDING" ? "Sending…" : "Send reset link"}</button>
       </form>
-      <Link className="auth-form__secondary" href="/login">Return to sign in</Link>
+      <Link className="auth-form__back-link" href="/login">
+        <ArrowLeft className="w-4 h-4" />
+        <span>Return to sign in</span>
+      </Link>
     </>
   );
 }

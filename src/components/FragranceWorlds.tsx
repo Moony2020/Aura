@@ -12,10 +12,6 @@ const WORLD_3_VIDEO_URL =
   publicEnv.NEXT_PUBLIC_CLOUDINARY_WORLD_3_VIDEO_URL ||
   "https://res.cloudinary.com/dcru4if6j/video/upload/v1786968075/3_umsmqe.mp4";
 
-const WORLD_4_VIDEO_URL =
-  publicEnv.NEXT_PUBLIC_CLOUDINARY_WORLD_4_VIDEO_URL ||
-  "https://res.cloudinary.com/dcru4if6j/video/upload/v1786968025/4_qsri4s.mp4";
-
 const worlds = [
   {
     id: "world-2",
@@ -47,31 +43,16 @@ const worlds = [
     entrance: "side" as const,
     notesStyle: "underline" as const,
   },
-  {
-    id: "world-4",
-    worldNumber: "04",
-    videoSrc: WORLD_4_VIDEO_URL,
-    name: "Amber",
-    nameAccent: "Mystique",
-    classification: "Extrait de Parfum • 100ml",
-    description:
-      "Saffron-laced smoke gives way to rich oud, resting on a base of amber and supple leather.",
-    notes: { top: "Saffron", heart: "Oud", base: "Amber & Leather" },
-    accent: "#C8A265",
-    layout: "left" as const,
-    entrance: "scale" as const,
-    notesStyle: "stacked" as const,
-  },
 ];
 
-const TRANSITION_LOCK_MS = 1100;
-const WHEEL_THRESHOLD = 12;
-const SWIPE_THRESHOLD = 40;
+const WHEEL_THRESHOLD = 30;
+const SWIPE_THRESHOLD = 50;
 
 export default function FragranceWorlds() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInZone = useRef(false);
-  const isAnimating = useRef(false);
+  const isLocked = useRef(false);
+  const animTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStartY = useRef(0);
 
   useEffect(() => {
@@ -81,62 +62,108 @@ export default function FragranceWorlds() {
     const getSections = () =>
       Array.from(container.querySelectorAll<HTMLElement>("[data-world-section]"));
 
-    const zoneObserver = new IntersectionObserver(
-      ([entry]) => {
-        isInZone.current = entry.isIntersecting;
-      },
-      { threshold: 0.2 }
-    );
-    zoneObserver.observe(container);
-
-    const currentIndex = () => {
+    const getCurrentPosition = (): "hero" | 0 | 1 | "reviews" => {
       const sections = getSections();
-      const viewportCenter = window.scrollY + window.innerHeight / 2;
-      let index = 0;
-      sections.forEach((sec, i) => {
-        if (sec.offsetTop <= viewportCenter) index = i;
-      });
-      return index;
+      if (sections.length < 2) return "hero";
+
+      const scrollY = window.scrollY;
+      const vh = window.innerHeight;
+
+      const top2 = sections[0].offsetTop;
+      const top3 = sections[1].offsetTop;
+      const bottom3 = top3 + sections[1].offsetHeight;
+
+      // Above World 2
+      if (scrollY < top2 - vh * 0.35) {
+        return "hero";
+      }
+
+      // Past World 3
+      if (scrollY > bottom3 - vh * 0.35) {
+        return "reviews";
+      }
+
+      // Inside Worlds 2, 3
+      const diff2 = Math.abs(scrollY - top2);
+      const diff3 = Math.abs(scrollY - top3);
+
+      if (diff2 <= diff3) return 0;
+      return 1;
     };
 
-    const goTo = (index: number) => {
-      const sections = getSections();
-      const clamped = Math.max(0, Math.min(sections.length - 1, index));
-      const target = sections[clamped];
-      if (!target) return;
-      isAnimating.current = true;
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.setTimeout(() => {
-        isAnimating.current = false;
-      }, TRANSITION_LOCK_MS);
+    const absorbCooldown = () => {
+      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
+      cooldownTimer.current = setTimeout(() => {
+        isLocked.current = false;
+      }, 300);
+    };
+
+    const scrollToTarget = (targetEl: HTMLElement | null) => {
+      if (!targetEl) return;
+      isLocked.current = true;
+      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      if (animTimer.current) clearTimeout(animTimer.current);
+      animTimer.current = setTimeout(() => {
+        absorbCooldown();
+      }, 700);
+    };
+
+    const scrollToWorld1 = () => {
+      isLocked.current = true;
+      window.scrollTo({ top: 1050, behavior: "smooth" });
+
+      if (animTimer.current) clearTimeout(animTimer.current);
+      animTimer.current = setTimeout(() => {
+        absorbCooldown();
+      }, 700);
     };
 
     const onWheel = (e: WheelEvent) => {
-      if (!isInZone.current) return;
-      if (isAnimating.current) {
-        e.preventDefault();
+      const pos = getCurrentPosition();
+      const sections = getSections();
+      if (sections.length < 2) return;
+
+      const bottom3 = sections[1].offsetTop + sections[1].offsetHeight;
+      const isNearWorld3FromBelow = pos === "reviews" && window.scrollY <= bottom3 + 80;
+
+      // If locked, absorb event to prevent rapid momentum skips
+      if (isLocked.current) {
+        if (pos !== "reviews" || (isNearWorld3FromBelow && e.deltaY < 0)) {
+          e.preventDefault();
+        }
+        absorbCooldown();
         return;
       }
-      const index = currentIndex();
-      const sections = getSections();
 
-      if (e.deltaY > WHEEL_THRESHOLD) {
-        if (index >= sections.length - 1) return; // let native scroll continue past the last world
-        e.preventDefault();
-        goTo(index + 1);
-      } else if (e.deltaY < -WHEEL_THRESHOLD) {
-        if (index <= 0) {
-          // Smooth scroll back up to the Hero section
+      if (Math.abs(e.deltaY) < WHEEL_THRESHOLD) return;
+
+      if (e.deltaY > 0) {
+        // Scrolling DOWN
+        if (pos === "hero") {
+          if (window.scrollY >= 980) {
+            e.preventDefault();
+            scrollToTarget(sections[0]);
+          }
+        } else if (pos === 0) {
           e.preventDefault();
-          isAnimating.current = true;
-          document.getElementById("hero")?.scrollIntoView({ behavior: "smooth", block: "end" });
-          window.setTimeout(() => {
-            isAnimating.current = false;
-          }, TRANSITION_LOCK_MS);
-          return;
+          scrollToTarget(sections[1]);
+        } else if (pos === 1) {
+          e.preventDefault();
+          scrollToTarget(document.getElementById("reviews"));
         }
-        e.preventDefault();
-        goTo(index - 1);
+      } else {
+        // Scrolling UP
+        if (isNearWorld3FromBelow) {
+          e.preventDefault();
+          scrollToTarget(sections[1]);
+        } else if (pos === 1) {
+          e.preventDefault();
+          scrollToTarget(sections[0]);
+        } else if (pos === 0) {
+          e.preventDefault();
+          scrollToWorld1();
+        }
       }
     };
 
@@ -145,30 +172,36 @@ export default function FragranceWorlds() {
     };
 
     const onTouchMove = (e: TouchEvent) => {
-      if (!isInZone.current || isAnimating.current) return;
+      if (isLocked.current) return;
       const deltaY = touchStartY.current - e.touches[0].clientY;
       if (Math.abs(deltaY) < SWIPE_THRESHOLD) return;
 
-      const index = currentIndex();
+      const pos = getCurrentPosition();
       const sections = getSections();
+      if (sections.length < 2) return;
+
+      const bottom3 = sections[1].offsetTop + sections[1].offsetHeight;
+      const isNearWorld3FromBelow = pos === "reviews" && window.scrollY <= bottom3 + 80;
 
       if (deltaY > 0) {
-        if (index >= sections.length - 1) return;
-        e.preventDefault();
-        goTo(index + 1);
-      } else {
-        if (index <= 0) {
-          // Smooth scroll back up to the Hero section
+        if (pos === 0) {
           e.preventDefault();
-          isAnimating.current = true;
-          document.getElementById("hero")?.scrollIntoView({ behavior: "smooth", block: "end" });
-          window.setTimeout(() => {
-            isAnimating.current = false;
-          }, TRANSITION_LOCK_MS);
-          return;
+          scrollToTarget(sections[1]);
+        } else if (pos === 1) {
+          e.preventDefault();
+          scrollToTarget(document.getElementById("reviews"));
         }
-        e.preventDefault();
-        goTo(index - 1);
+      } else {
+        if (isNearWorld3FromBelow) {
+          e.preventDefault();
+          scrollToTarget(sections[1]);
+        } else if (pos === 1) {
+          e.preventDefault();
+          scrollToTarget(sections[0]);
+        } else if (pos === 0) {
+          e.preventDefault();
+          scrollToWorld1();
+        }
       }
     };
 
@@ -177,7 +210,8 @@ export default function FragranceWorlds() {
     window.addEventListener("touchmove", onTouchMove, { passive: false });
 
     return () => {
-      zoneObserver.disconnect();
+      if (animTimer.current) clearTimeout(animTimer.current);
+      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);

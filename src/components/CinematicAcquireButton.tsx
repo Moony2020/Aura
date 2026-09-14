@@ -9,10 +9,12 @@ export default function CinematicAcquireButton({
   worldNumber,
   className,
   accent,
+  align = "left",
 }: {
   worldNumber: number;
   className: string;
   accent?: string;
+  align?: "left" | "right";
 }) {
   const [message, setMessage] = useState("");
   const [state, setState] = useState<"idle" | "success" | "error">("idle");
@@ -36,8 +38,10 @@ export default function CinematicAcquireButton({
     });
   };
 
+  const isRight = align === "right";
+
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div className={`relative inline-flex flex-col ${isRight ? "items-end" : "items-start"}`}>
       <button
         type="button"
         className={`${className} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 disabled:cursor-wait disabled:opacity-60`}
@@ -51,7 +55,7 @@ export default function CinematicAcquireButton({
       </button>
       <span
         id={`cinematic-acquire-status-${worldNumber}`}
-        className="min-h-4 text-[10px] uppercase tracking-[0.16em] text-[#F5E4B5]"
+        className={`absolute top-full ${isRight ? "right-0 text-right" : "left-0 text-left"} mt-2 whitespace-nowrap text-[10px] uppercase tracking-[0.16em] text-[#F5E4B5] pointer-events-none transition-opacity duration-300 ${message ? "opacity-100" : "opacity-0"}`}
         role={state === "error" ? "alert" : "status"}
         aria-live="polite"
       >

@@ -42,7 +42,7 @@ export function MaisonReviewsCarousel() {
   }, [totalReviews]);
 
   return (
-    <section aria-labelledby="maison-reviews-title" className="relative overflow-hidden border-y border-[#e5c982]/15 bg-[#0b090a]">
+    <section id="reviews" aria-labelledby="maison-reviews-title" className="relative overflow-hidden border-y border-[#e5c982]/15 bg-[#0b090a]">
       <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_18%_0%,rgba(160,109,48,0.18),transparent_45%),radial-gradient(ellipse_at_82%_100%,rgba(229,201,130,0.09),transparent_38%)]" />
       <div className="relative mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-18 lg:px-12">
         {/* Header */}

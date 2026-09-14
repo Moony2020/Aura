@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 
 import { passwordResetInputSchema } from "@/domain/auth/password-reset.schema";
 import { inspectPasswordResetToken, resetPassword } from "@/server/auth/password-reset-service";
+import { requestIp } from "@/server/auth/request-ip";
+import { checkAuthRateLimit, rateLimitHeaders } from "@/server/auth/rate-limit-service";
+import { sameOriginMutation, transportSecurityHeaders } from "@/server/auth/transport-security";
 
 export const runtime = "nodejs";
 
@@ -21,6 +24,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!sameOriginMutation(request)) return json({ ok: false, status: "INVALID" }, 403);
   let body: unknown;
   try {
     body = await request.json();
@@ -32,6 +36,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return json({ ok: false, status: "INVALID" }, 400);
 
   try {
+    const ip=requestIp(request); const il=ip?await checkAuthRateLimit("PASSWORD_RESET_IP",ip):null; const tl=await checkAuthRateLimit("PASSWORD_RESET_TOKEN",parsed.data.token); if((il&&!il.allowed)||!tl.allowed)return NextResponse.json({ok:false,status:"INVALID"},{status:400,headers:rateLimitHeaders((il&&!il.allowed?il:tl))});
     const result = await resetPassword(parsed.data);
     return json(result, result.ok ? 200 : 400);
   } catch {

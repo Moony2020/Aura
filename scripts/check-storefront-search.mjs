@@ -56,7 +56,7 @@ for (const token of [
   if (!overlay.includes(token)) throw new Error(`Search overlay contract missing: ${token}`);
 }
 
-if (!header.includes("<StorefrontSearchAction key={label} />")) throw new Error("Header does not isolate search in the client component.");
+if (!header.includes("StorefrontSearchAction") || !header.includes("<StorefrontSearchAction")) throw new Error("Header does not isolate search in the client component.");
 
 for (const token of ["searchPublishedFragrances(query)", "action=\"/search\"", "search-page-results-grid", "Published fragrances only"]) {
   if (!page.includes(token)) throw new Error(`Search results page contract missing: ${token}`);

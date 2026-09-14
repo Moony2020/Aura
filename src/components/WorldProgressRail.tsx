@@ -2,12 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-const worldIds = ["world-1", "world-2", "world-3", "world-4"];
+const worldIds = ["world-1", "world-2", "world-3"];
 const WORLD_LABELS = [
   "Élixir de Rose",
   "Noir Cashmere",
   "Citrus Vetiver",
-  "Amber Mystique",
 ];
 
 const STEP_PX = 42; // vertical spacing between ticks
@@ -15,74 +14,83 @@ const STEP_PX = 42; // vertical spacing between ticks
 export default function WorldProgressRail() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visible, setVisible] = useState(false);
-  // Persistent visibility ratio per section — survives partial IntersectionObserver
-  // batches so the rail never blanks out just because a given tick didn't include
-  // every section's entry.
-  const ratiosRef = useRef<Record<string, number>>({});
-
   useEffect(() => {
-    const recompute = () => {
-      const isFooterVisible = (ratiosRef.current["footer"] ?? 0) > 0.05;
-      if (isFooterVisible) {
+    let world1Revealed = false;
+
+    const onWorld1Visibility = (e: Event) => {
+      const detail = (e as CustomEvent<{ visible: boolean }>).detail;
+      world1Revealed = detail.visible;
+      updateRail();
+    };
+    window.addEventListener("aura:world1-visibility", onWorld1Visibility);
+
+    const updateRail = () => {
+      const vh = window.innerHeight;
+      const centerY = vh / 2;
+
+      const el2 = document.getElementById("world-2");
+      const el3 = document.getElementById("world-3");
+
+      const rect2 = el2?.getBoundingClientRect();
+      const rect3 = el3?.getBoundingClientRect();
+
+      // If user has scrolled past World 3 into reviews or footer
+      if (rect3 && rect3.bottom <= centerY) {
         setVisible(false);
         return;
       }
 
-      let bestId: string | null = null;
-      let bestRatio = 0;
-      worldIds.forEach((id) => {
-        const ratio = ratiosRef.current[id] ?? 0;
-        if (ratio >= bestRatio && ratio > 0) {
-          bestRatio = ratio;
-          bestId = id;
-        }
-      });
+      // Check World 3
+      if (rect3 && rect3.top <= centerY && rect3.bottom > centerY) {
+        setActiveIndex(2);
+        setVisible(true);
+        return;
+      }
 
-      if (bestId) setActiveIndex(worldIds.indexOf(bestId));
-      setVisible(bestRatio > 0.05);
+      // Check World 2
+      if (rect2 && rect2.top <= centerY && rect2.bottom > centerY) {
+        setActiveIndex(1);
+        setVisible(true);
+        return;
+      }
+
+      // Check World 1
+      // World 1 lives in the hero portal. It is active once scrolled into the portal (scrollY >= 450 or world1Revealed)
+      // and before World 2 reaches the center of the viewport.
+      const isPastWorld1Start = world1Revealed || window.scrollY >= 450;
+      const isBeforeWorld2 = !rect2 || rect2.top > centerY;
+
+      if (isPastWorld1Start && isBeforeWorld2 && window.scrollY >= 380) {
+        setActiveIndex(0);
+        setVisible(true);
+        return;
+      }
+
+      // Above World 1 (Initial Hero Screen "Enter the World of Fragrance")
+      setVisible(false);
     };
 
-    // World 1 lives inside the pinned Hero container at opacity 0 until its GSAP
-    // reveal — it's geometrically "fully visible" to IntersectionObserver from the
-    // very first frame, so its actual visibility comes from HeroPortalExperience's
-    // scroll-driven reveal event instead of DOM geometry.
-    const onWorld1Visibility = (e: Event) => {
-      const detail = (e as CustomEvent<{ visible: boolean }>).detail;
-      ratiosRef.current["world-1"] = detail.visible ? 1 : 0;
-      recompute();
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateRail();
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener("aura:world1-visibility", onWorld1Visibility);
 
-    // Worlds 2-6 and Footer are ordinary in-flow sections, so real geometric intersection works.
-    const sections = worldIds
-      .slice(1)
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
 
-    const footerEl = document.getElementById("footer");
-    const targetsToObserve = [...sections, ...(footerEl ? [footerEl] : [])];
-
-    let observer: IntersectionObserver | null = null;
-    if (targetsToObserve.length > 0) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            ratiosRef.current[entry.target.id] = entry.intersectionRatio;
-            // When any of world-2..6 comes into viewport, clear world-1 override
-            if (entry.target.id !== "footer" && entry.intersectionRatio > 0.2) {
-              ratiosRef.current["world-1"] = 0;
-            }
-          });
-          recompute();
-        },
-        { threshold: [0, 0.05, 0.15, 0.3, 0.5, 0.75, 1] }
-      );
-      targetsToObserve.forEach((target) => observer!.observe(target));
-    }
+    // Initial check
+    updateRail();
 
     return () => {
       window.removeEventListener("aura:world1-visibility", onWorld1Visibility);
-      observer?.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
   }, []);
 

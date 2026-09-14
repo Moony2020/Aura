@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { Compass } from "lucide-react";
 import CinematicAcquireButton from "./CinematicAcquireButton";
 
@@ -227,16 +228,17 @@ export default function FragranceWorldSection({
           <div className={`flex items-center gap-4 pt-4 ${ctaJustify}`}>
             <CinematicAcquireButton
               worldNumber={Number(worldNumber)}
-              className="px-9 py-4 rounded-full bg-[#D4AF37] text-[#080809] text-xs uppercase tracking-[0.25em] font-semibold whitespace-nowrap hover:bg-[#FFF3D1] transition-colors duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)]"
+              className="inline-flex items-center justify-center px-9 py-4 rounded-full bg-[#D4AF37] border border-[#D4AF37] text-[#080809] text-xs uppercase tracking-[0.25em] font-semibold leading-none whitespace-nowrap hover:bg-[#E5C158] hover:border-[#E5C158] transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(229,193,88,0.55)]"
               accent={accent}
+              align={isRight ? "right" : "left"}
             />
-            <button
-              type="button"
-              className="px-7 py-4 rounded-full border text-[#FFF3D1] text-xs uppercase tracking-[0.25em] whitespace-nowrap hover:bg-[#121215]/50 transition-all duration-300"
+            <Link
+              href="/fragrances"
+              className="inline-flex items-center justify-center px-7 py-4 rounded-full border text-[#FFF3D1] text-xs uppercase tracking-[0.25em] leading-none whitespace-nowrap hover:bg-[#121215]/50 transition-all duration-300"
               style={{ borderColor: `${accent}66` }}
             >
               Explore Notes
-            </button>
+            </Link>
           </div>
         </div>
       </div>

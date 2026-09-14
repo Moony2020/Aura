@@ -57,7 +57,7 @@ for (const token of [
   "server/database-authoritative",
   "CSRF review",
   "shared server/application service layer",
-  "Next Phase:** Phase 4",
+  "Current Phase:** Phase 4",
 ]) {
   if (![database, architecture, security, api, status].some((source) => source.includes(token))) {
     throw new Error(`Cross-document commerce architecture reference missing: ${token}`);

@@ -67,7 +67,7 @@ Auth.js is the authentication/session-mechanics boundary accepted by ADR-007. AU
 
 The initial method scope is email/password Credentials only. Compatibility closure against `next-auth@5.0.0-beta.32` / `@auth/core@0.41.3` proved that Credentials-only with `session.strategy: "database"` returns `UnsupportedStrategy`; that proposal is superseded. The owner-approved strategy is Auth.js Credentials + JWT Sessions. JWT is transport for minimal identity and `sessionVersion` data, never authority for role, status, permissions, ownership, or profile facts. Protected server boundaries reload canonical AURA `userId` authority and compare the server-controlled `authCredentials.sessionVersion`. Password hashes and `sessionVersion` belong in future `authCredentials`; single-use verification/recovery token digests belong in `authTokens`; no `authSessions` primary collection is required for JWT sessions. Stage 4.1 creates none of these collections and installs no Auth.js package.
 
-Future server policy composition is `session identity → canonical User lookup → active/verification check → role/ownership policy → repository/service`. Registration always creates a `CUSTOMER`/`PENDING` user; `ADMIN` is never client-selectable. Cart/Wishlist merge remains a Stage 4.8 boundary.
+Future server policy composition is `session identity → canonical User lookup → active/verification check → role/ownership policy → repository/service`. Registration always creates a `CUSTOMER`/`PENDING` user; `ADMIN` is never client-selectable. Cart/Wishlist merge is implemented at the Stage 4.8 post-login handoff boundary.
 
 Authentication request state must remain inside protected account routes/actions. Do not read global `auth()` or `cookies()` from the root or storefront layout; this preserves public discovery caching and the Phase 3 true-404 behavior. Cinematic loading and protected cinematic components remain isolated.
 
@@ -92,3 +92,7 @@ Stage 3.6 adds the first real PDP Add to Bag and quantity controls without chang
 ## Cinematic Preservation
 
 `HeroPortalExperience.tsx`, `FragranceWorlds.tsx`, and `FragranceWorldSection.tsx` are protected integration surfaces. Domain adoption will be incremental and regression-tested; the portal is not replaced by a generic store homepage.
+
+## Order History — Stage 4.7 P3
+
+Customer Order History is a protected, read-only Account surface. Auth.js session identity is revalidated through `sessionVersion` and the canonical ACTIVE + verified User before ownership-scoped Order reads. The UI consumes stored immutable Order snapshots and historical totals; `orderNumber` is the customer-facing reference and MongoDB `_id` is not exposed as that reference. Reorder, customer Order mutation, and Stage 4.8 merge behavior remain out of scope.

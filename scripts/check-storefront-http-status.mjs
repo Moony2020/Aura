@@ -1,4 +1,4 @@
-const baseUrl = process.env.BASE_URL ?? "http://localhost:3014";
+const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
 
 const routes = [
   ["/", 200],
@@ -7,7 +7,7 @@ const routes = [
   ["/product/not-a-real-product", 404],
   ["/collections/cinematic-worlds", 404],
   ["/cart", 200],
-  ["/wishlist", 200],
+  ["/wishlist", 404],
 ];
 
 if (process.env.PUBLIC_COLLECTION_SLUG) {

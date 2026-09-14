@@ -114,6 +114,10 @@ Commands: `npm run db:fragrance:init`, `npm run db:fragrance:check`, and `npm ru
 
 `addresses` is a dedicated collection referencing `userId`. Postal codes remain strings and countries use two-letter ISO-style codes. Repository methods are ownership-scoped. Partial unique indexes prevent more than one default shipping or billing address per user. Saved addresses are not order history; Stage 1.9 orders must store immutable address snapshots. Authentication, sessions, passwords, and authorization middleware remain Phase 4 work.
 
+### Stage 4.7 Order History
+
+Order History reads use the existing `orders` collection and ownership-scoped repository methods. Historical line items, address snapshots, and totals are read from the stored Order and are not reconstructed from current Products or saved Addresses. `orderNumber` is the customer-facing reference; MongoDB `_id` remains server-side only. P3 verification creates uniquely namespaced fixtures and removes them after the Atlas checks.
+
 ## Authentication Persistence Architecture (Stage 4.1)
 
 The existing `users` collection remains the canonical AURA identity. Stage 4.1 creates no authentication collection and does not change business data. Auth.js owns authentication/session mechanics at a future adapter boundary; AURA services load `users` by stable `userId` and enforce status, verification, role, ownership, and admin policy.
@@ -123,7 +127,7 @@ Database-backed sessions were evaluated but are not compatible with the initial 
 - `authCredentials`: one server-only record per canonical `userId`, containing a versioned Argon2id password hash, nonnegative `sessionVersion`, and password-change timestamps. No plaintext, client hash, or password field belongs in `users`.
 - `authTokens`: one-way, purpose-bound, single-use digests for `EMAIL_VERIFICATION` and `PASSWORD_RESET`, with expiry and atomic consumption. TTL is cleanup only and never the authorization check.
 
-The official Auth.js MongoDB adapter is not part of the accepted initial path because JWT sessions do not require it. It must not create a competing Auth.js User model or violate the strict AURA validator. Validators, indexes, idempotent initialization, Atlas verification, and cleanup belong to Stages 4.2–4.4. Cart/Wishlist guest-to-user merge remains deferred to Stage 4.8.
+The official Auth.js MongoDB adapter is not part of the accepted initial path because JWT sessions do not require it. It must not create a competing Auth.js User model or violate the strict AURA validator. Validators, indexes, idempotent initialization, Atlas verification, and cleanup belong to Stages 4.2–4.4. Cart/Wishlist guest-to-user merge is implemented in Stage 4.8 with independent transactional domain cleanup and no new durable idempotency marker.
 
 ## Order and Inventory Collections (Stage 1.9)
 

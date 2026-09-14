@@ -91,10 +91,10 @@ export default async function ProductDetailPage({
           </span>
         </nav>
 
-        {/* 2. Main Product Showcase Grid (Two Columns) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        {/* 2. Main Product Showcase Grid (Two Columns above 868px, Image side given more width) */}
+        <div className="grid grid-cols-1 min-[868px]:grid-cols-[1.08fr_1fr] gap-8 lg:gap-12 items-start">
           {/* Left Column: Media Gallery */}
-          <div className="lg:col-span-7">
+          <div className="w-full">
             <ProductGallery
               media={product.media}
               name={product.name}
@@ -102,7 +102,7 @@ export default async function ProductDetailPage({
           </div>
 
           {/* Right Column: Product Details & Purchase Form */}
-          <section className="lg:col-span-5 space-y-4">
+          <section className="space-y-5 w-full">
             {/* Brand */}
             <p className="text-xs uppercase tracking-[0.25em] text-[#c5a869] font-bold">
               {product.brand ?? "AURA MAISON"}

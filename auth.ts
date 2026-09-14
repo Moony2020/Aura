@@ -10,6 +10,15 @@ import { loadUserSessionAuthority, validateSessionToken } from "./src/server/aut
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: requireServerEnv("AUTH_SECRET"),
   session: { strategy: "jwt" },
+  logger: {
+    error(error) {
+      // Suppress noisy JWTSessionError logs caused by stale/mismatched client cookies
+      if (error.name === "JWTSessionError" || error.message?.includes("no matching decryption secret")) {
+        return;
+      }
+      console.error(error);
+    },
+  },
   providers: [
     Credentials({
       credentials: {

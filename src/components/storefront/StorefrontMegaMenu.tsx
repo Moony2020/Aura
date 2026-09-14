@@ -324,6 +324,8 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
                 src="/assets/art-of-fragrance.jpg"
                 alt="AURA Signature Fragrance"
                 fill
+                unoptimized
+                priority
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="storefront-mega-card__btn">
@@ -410,9 +412,11 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
             </div>
             <div className="storefront-mega-card__image-box">
               <Image
-                src="/assets/collections-hero.jpg"
+                src="/assets/collection-1.jpg"
                 alt="AURA Collections"
                 fill
+                unoptimized
+                priority
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="storefront-mega-card__btn">

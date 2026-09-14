@@ -42,7 +42,7 @@ Status: **COMPLETE**. See `phases/PHASE-01-FOUNDATION.md`.
 
 ## Phase 2 — Storefront & Product Discovery
 
-Status: **COMPLETE**. Storefront and product discovery are signed off; Phase 3 commerce stages 3.1–3.12 are complete. Phase 4 Stages 4.1–4.4 are COMPLETE; Stage 4.5 P1/P2 are COMPLETE and P3 Final Audit & Documentation is IN PROGRESS.
+Status: **COMPLETE**. Storefront and product discovery are signed off; Phase 3 commerce stages 3.1–3.12 are complete. Phase 4 Stages 4.1–4.11 are COMPLETE; Phase 5 — Checkout & Payments is READY — NOT STARTED.
 
 - [x] 2.1 Storefront Shell & Shared Layout
 - [x] 2.2 Global Navigation
@@ -83,19 +83,19 @@ Exit criteria: persistent guest cart, server-validated pricing/inventory, real `
 
 ## Phase 4 — Authentication & Customer Account
 
-Status: **IN PROGRESS**. Stages 4.1–4.4 are COMPLETE. Stage 4.5 P1/P2 are COMPLETE; P3 — Final Audit & Documentation is IN PROGRESS.
+Status: **COMPLETE**. Stages 4.1–4.11 are COMPLETE. Phase 4 is signed off; Phase 5 is READY — NOT STARTED.
 
 - [x] 4.1 Authentication Architecture
 - [x] 4.2 Registration & Email Validation
 - [x] 4.3 Login, Logout & Sessions
 - [x] 4.4 Password Recovery
-- [ ] 4.5 Account Overview & Profile
-- [ ] 4.6 Address Management
-- [ ] 4.7 Order History
-- [ ] 4.8 Wishlist & Cart Merge Integration
-- [ ] 4.9 Authentication Security Hardening
-- [ ] 4.10 Authentication Tests
-- [ ] 4.11 Phase 4 Sign-Off
+- [x] 4.5 Account Overview & Profile
+- [x] 4.6 Address Management
+- [x] 4.7 Order History (P1/P2/P3 complete)
+- [x] 4.8 Wishlist & Cart Merge Integration (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
+- [x] 4.9 Authentication Security Hardening (P0 Goal Contract, Owner Decisions, Phase Ledger, P1, P2, and P3 complete)
+- [x] 4.10 Authentication Tests (Goal Contract / Test Plan and full execution complete)
+- [x] 4.11 Phase 4 Sign-Off
 
 Dependencies: Phase 1 user domain; Phase 3 cart/wishlist.  
 Exit criteria: secure server-authorized accounts and verified guest-to-account state merge.
@@ -112,14 +112,16 @@ Stage 4.3 P3 adds the Maison `/login` experience, server-action Auth.js Credenti
 
 Stage 4.4 implements Password Recovery only. `POST /api/auth/password-reset/request` is non-enumerating and creates a hash-only `PASSWORD_RESET` record only for an ACTIVE, verified account with credentials; outstanding reset tokens rotate and delivery uses the fake/in-memory sender. `GET /api/auth/password-reset?token=...` is inspection-only. Explicit `POST /api/auth/password-reset` atomically consumes the token, writes a new Argon2id hash, increments `sessionVersion`, invalidates prior JWTs, rejects replay/expiry/PENDING/DISABLED cases, and preserves transaction rollback. Atlas-backed service, transport, cleanup, concurrency, UI, TypeScript, ESLint, build, audit, and regression checks passed. At the Stage 4.4 closeout, Stage 4.5 was READY — NOT STARTED; its later P1/P2 status is recorded below.
 
-Stage 4.5 P1/P2 adds only the protected Account Overview and Profile surface. `/account` uses server-derived, validated Auth.js/sessionVersion authority and the canonical `users` collection. The client may update only `firstName`, `lastName`, and `phone`; all identity, lifecycle, credential, authorization, address, cart, and wishlist fields remain server-controlled and are rejected if supplied. P3 Final Audit & Documentation is IN PROGRESS under owner approval and is re-running the required regression, quality, cleanup, scoped-diff, and documentation evidence. Stage 4.6 remains NOT STARTED.
+Stage 4.5 P1/P2 adds only the protected Account Overview and Profile surface. `/account` uses server-derived, validated Auth.js/sessionVersion authority and the canonical `users` collection. The client may update only `firstName`, `lastName`, and `phone`; all identity, lifecycle, credential, authorization, address, cart, and wishlist fields remain server-controlled and are rejected if supplied. P3 Final Audit & Documentation reconciled the superseded navigation, search, PDP, and Wishlist expectations and passed the final regression, quality, cleanup, scoped-diff, and documentation evidence. Stage 4.5 is COMPLETE; Stage 4.6 remains READY — NOT STARTED.
 
 ## Phase 5 — Checkout & Payments
 
-- [ ] 5.1 Checkout Architecture
-- [ ] 5.2 Contact & Delivery Address
-- [ ] 5.3 Shipping Methods
-- [ ] 5.4 Server Pricing, Tax & Inventory Review
+Status: **IN PROGRESS**. Stages 5.1–5.4 are COMPLETE; Stage 5.5 is IN PROGRESS with P1–P3 COMPLETE and P4 IMPLEMENTED — EVIDENCE PENDING. Full browser handoff requires an approved checkout host boundary. Stages 5.6–5.15 are NOT STARTED.
+
+- [x] 5.1 Checkout Architecture (P0/Phase Ledger/P1/P2/P3 complete)
+- [x] 5.2 Contact & Delivery Address (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
+- [x] 5.3 Shipping Methods (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
+- [x] 5.4 Server Pricing, Tax & Inventory Review (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
 - [ ] 5.5 Stripe Integration
 - [ ] 5.6 PayPal Integration
 - [ ] 5.7 Wallet Eligibility (Apple Pay / Google Pay)

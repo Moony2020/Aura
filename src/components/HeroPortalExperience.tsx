@@ -459,11 +459,11 @@ export default function HeroPortalExperience() {
             <div className="flex items-center gap-4 pt-4">
               <CinematicAcquireButton
                 worldNumber={1}
-                className="px-9 py-4 rounded-full bg-[#D4AF37] text-[#080809] text-xs uppercase tracking-[0.25em] font-semibold whitespace-nowrap hover:bg-[#FFF3D1] transition-colors duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)]"
+                className="inline-flex items-center justify-center px-9 py-4 rounded-full bg-[#D4AF37] border border-[#D4AF37] text-[#080809] text-xs uppercase tracking-[0.25em] font-semibold leading-none whitespace-nowrap hover:bg-[#E5C158] hover:border-[#E5C158] transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(229,193,88,0.55)]"
               />
               <Link
                 href="/fragrances"
-                className="px-7 py-4 rounded-full border border-[#E5C158]/40 text-[#FFF3D1] text-xs uppercase tracking-[0.25em] whitespace-nowrap hover:border-[#E5C158] hover:bg-[#121215]/50 transition-all duration-300"
+                className="inline-flex items-center justify-center px-7 py-4 rounded-full border border-[#E5C158]/40 text-[#FFF3D1] text-xs uppercase tracking-[0.25em] leading-none whitespace-nowrap hover:border-[#E5C158] hover:bg-[#121215]/50 transition-all duration-300"
               >
                 Explore Notes
               </Link>

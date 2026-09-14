@@ -95,10 +95,10 @@ export function ProductGallery({
   const activeAsset = items[selected] ?? items[0];
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start">
-      {/* Left Vertical Thumbnails Column */}
+    <div className="flex flex-col min-[500px]:max-[868px]:flex-row min-[1025px]:flex-row gap-3 min-[500px]:max-[868px]:gap-5 min-[1025px]:gap-5 w-full items-center min-[500px]:max-[868px]:items-start min-[1025px]:items-start">
+      {/* Thumbnails: Left on 500-868px and > 1024px; Down/Under on 869-1024px and < 500px */}
       {items.length > 1 && (
-        <div className="flex sm:flex-col gap-3 order-2 sm:order-1 overflow-x-auto sm:overflow-y-auto max-h-[600px] shrink-0 pb-2 sm:pb-0">
+        <div className="flex flex-row min-[500px]:max-[868px]:flex-col min-[1025px]:flex-col gap-2.5 order-2 min-[500px]:max-[868px]:order-1 min-[1025px]:order-1 overflow-x-auto min-[500px]:max-[868px]:overflow-y-auto min-[1025px]:overflow-y-auto max-w-full min-[500px]:max-[868px]:max-h-[520px] min-[1025px]:max-h-[520px] shrink-0 mt-3 min-[500px]:max-[868px]:mt-0 min-[1025px]:mt-0 pb-1 min-[500px]:max-[868px]:pb-0 min-[1025px]:pb-0 justify-center min-[500px]:max-[868px]:justify-start min-[1025px]:justify-start">
           {items.map((item, idx) => {
             const isSelected = selected === idx;
             return (
@@ -108,7 +108,7 @@ export function ProductGallery({
                 onClick={() => setSelected(idx)}
                 aria-pressed={isSelected}
                 aria-label={`View ${item.label ?? `image ${idx + 1}`}`}
-                className={`relative w-16 h-20 sm:w-20 sm:h-24 rounded-xl overflow-hidden border transition-all shrink-0 cursor-pointer bg-[#141217] ${
+                className={`relative w-[68px] h-[80px] min-[391px]:w-[80px] min-[391px]:h-[92px] sm:w-[88px] sm:h-[100px] min-[1025px]:w-20 min-[1025px]:h-24 rounded-xl overflow-hidden border transition-all shrink-0 cursor-pointer bg-[#141217] ${
                   isSelected
                     ? "border-[#c5a869] ring-2 ring-[#c5a869]/30"
                     : "border-[#3a3528]/60 hover:border-[#c5a869]/50 opacity-70 hover:opacity-100"
@@ -118,7 +118,7 @@ export function ProductGallery({
                   src={item.url}
                   alt={item.alt}
                   fill
-                  sizes="100px"
+                  sizes="120px"
                   className="object-cover"
                   unoptimized
                 />
@@ -128,15 +128,15 @@ export function ProductGallery({
         </div>
       )}
 
-      {/* Center Large Full-Width Main Display Stage */}
-      <div className="relative flex-1 order-1 sm:order-2 w-full flex flex-col items-center">
-        <div className="relative w-full aspect-[4/4.8] sm:aspect-[4/4.5] bg-[#0c0a0e] rounded-2xl border border-[#3a3528]/60 flex items-center justify-center overflow-hidden shadow-2xl">
+      {/* Center Large Main Display Stage */}
+      <div className="relative flex-1 order-1 min-[500px]:max-[868px]:order-2 min-[1025px]:order-2 w-full flex flex-col items-center">
+        <div className="relative w-full aspect-[4/4.5] sm:aspect-[4/4.3] max-h-[min(65vh,500px)] bg-[#0c0a0e] rounded-2xl border border-[#3a3528]/60 flex items-center justify-center overflow-hidden shadow-2xl">
           <Image
             src={activeAsset.url}
             alt={activeAsset.alt || name}
             fill
             priority
-            sizes="(max-width: 768px) 100vw, 55vw"
+            sizes="(max-width: 868px) 100vw, 45vw"
             className="object-cover transition-all duration-300"
             unoptimized
           />

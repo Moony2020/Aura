@@ -4,9 +4,13 @@ import { auth } from "../../../auth.ts";
 import { loadUserSessionAuthority, type SessionAuthority } from "./session-authority.ts";
 
 export async function getCurrentSessionAuthority(): Promise<SessionAuthority | null> {
-  const session = await auth();
-  const userId = session?.user?.id;
-  return userId ? loadUserSessionAuthority(userId) : null;
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+    return userId ? loadUserSessionAuthority(userId) : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function requireCurrentSessionAuthority(): Promise<SessionAuthority> {

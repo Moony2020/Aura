@@ -2,15 +2,12 @@ import { NextResponse } from "next/server.js";
 import { z } from "zod";
 
 import { inspectEmailVerificationToken, verifyEmailToken } from "../../../../server/auth/verification-service.ts";
+import { sameOriginMutation, transportSecurityHeaders } from "../../../../server/auth/transport-security.ts";
 
 export const runtime = "nodejs";
 
 const verificationRequestSchema = z.object({ token: z.string().min(1).max(512) }).strict();
-const transportHeaders = {
-  "Cache-Control": "no-store",
-  "Referrer-Policy": "no-referrer",
-  "X-Content-Type-Options": "nosniff",
-};
+const transportHeaders = { ...transportSecurityHeaders, "Cache-Control": "no-store" };
 
 function json(body: unknown, status = 200) {
   return NextResponse.json(body, { status, headers: transportHeaders });
@@ -23,6 +20,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!sameOriginMutation(request)) return json({ ok: false, status: "INVALID" }, 403);
   let body: unknown;
   try {
     body = await request.json();

@@ -32,7 +32,7 @@ Security assumptions are reviewed during each owning phase and comprehensively i
 - Future `authTokens` records store only purpose-bound one-way digests for email verification and password reset. Expiry and atomic single-use consumption are authorization requirements; TTL is cleanup only.
 - Registration is always `CUSTOMER` + `PENDING`; `ADMIN` is assigned only by an explicit server-side administrative policy. AURA loads the canonical User before account, Cart, Wishlist, address, or order authorization.
 - Account responses are private/no-store where appropriate. Registration/login/recovery responses are non-enumerating, and each auth entry point has independent rate-limit and CSRF review requirements.
-- Auth state remains out of root/storefront layouts and public discovery caches so the Phase 3 streaming/404 boundary is preserved. Guest-to-user Cart/Wishlist merge remains deferred to Stage 4.8.
+- Auth state remains out of root/storefront layouts and public discovery caches so the Phase 3 streaming/404 boundary is preserved. Guest-to-user Cart/Wishlist merge is implemented only at the Stage 4.8 post-login handoff boundary.
 
 ## Active Foundation Finding
 
@@ -140,3 +140,10 @@ The 2026-08-17 audit originally reported five high-severity findings centered on
 - Successful reset writes the Argon2id hash under the accepted policy and increments `authCredentials.sessionVersion`, invalidating previously issued JWTs. Replay, expiry, PENDING, and DISABLED cases cannot activate or replace credentials; concurrent use has one winner.
 - Reset transport responses are `no-store`, `private` where applicable, and `no-referrer`. The browser does not persist raw tokens in localStorage/sessionStorage; the reset form removes the token from the URL after success.
 - No production email provider, Account/Profile behavior, Password Recovery beyond this stage, or Cart/Wishlist merge was added.
+
+## Order History Controls — Stage 4.7
+
+- Order History authorization requires Auth.js session identity, current `sessionVersion`, and canonical ACTIVE + verified User authority; session presence alone is insufficient.
+- List and detail reads are ownership-scoped in the repository. Cross-user order access is rejected without leaking another customer's data.
+- The browser cannot control ownership fields. Customer Order History is read-only and cannot mutate status, payment, fulfillment, totals, ownership, or snapshots.
+- Historical line items, addresses, and totals come from the stored Order snapshot. `orderNumber` is the visible customer reference; MongoDB `_id` is not exposed as that reference.

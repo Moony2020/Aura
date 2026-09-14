@@ -18,7 +18,7 @@ for (const token of ["LoginForm", "LogoutButton", "getCurrentSessionAuthority", 
 for (const token of ["useActionState", "name=\"email\"", "name=\"password\"", "autoComplete=\"current-password\"", "Signing in…"]) {
   requireToken(form, token, "Credentials login form");
 }
-for (const token of ["signIn(\"credentials\"", "safeCallbackUrl", "redirectTo: safeCallbackUrl", "AuthError", "INVALID_LOGIN_MESSAGE", "formData.get(\"password\")"]) {
+for (const token of ["signIn(\"credentials\"", "safeCallbackUrl", "redirectTo: callbackUrl", "AuthError", "INVALID_LOGIN_MESSAGE", "formData.get(\"password\")"]) {
   requireToken(actions, token, "Credentials login action");
 }
 for (const token of ["signOut({ redirectTo: \"/\" })"]) requireToken(actions, token, "Logout action");

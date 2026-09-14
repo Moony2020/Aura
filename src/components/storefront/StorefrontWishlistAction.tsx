@@ -9,7 +9,7 @@ import { formatMinorUnitMoney } from "@/lib/money";
 import { addCartItemAction } from "@/server/cart/cart-actions";
 import { clearWishlistAction, readCurrentWishlistAction, removeWishlistProductAction } from "@/server/wishlist/wishlist-actions";
 import type { WishlistViewItem, WishlistViewModel } from "@/server/wishlist/wishlist-service";
-import { publishCartView, requestCartDrawerOpen } from "@/lib/cart-events";
+import { publishCartView } from "@/lib/cart-events";
 
 const emptyWishlist: WishlistViewModel = { items: [], itemCount: 0, version: 0 };
 
@@ -39,10 +39,11 @@ export function StorefrontWishlistAction() {
   useEffect(() => {
     if (!open) return;
     const previousOverflow = document.body.style.overflow;
+    const trigger = triggerRef.current;
     document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
     document.addEventListener("keydown", onKeyDown);
-    return () => { document.body.style.overflow = previousOverflow; document.removeEventListener("keydown", onKeyDown); triggerRef.current?.focus(); };
+    return () => { document.body.style.overflow = previousOverflow; document.removeEventListener("keydown", onKeyDown); trigger?.focus(); };
   }, [open]);
 
   const remove = (productSlug: string) => startTransition(async () => {
@@ -53,7 +54,7 @@ export function StorefrontWishlistAction() {
   const addToBag = (item: WishlistViewItem, closeAfter = true) => {
     if (!item.productSlug || !item.defaultVariantId) return;
     return addCartItemAction({ productSlug: item.productSlug, variantId: item.defaultVariantId, quantity: quantities[itemKey(item)] ?? 1 }).then((result) => {
-      if (result.ok) { publishCartView(result.cart); if (closeAfter) { setOpen(false); requestCartDrawerOpen(); } }
+      if (result.ok) { publishCartView(result.cart); if (closeAfter) setOpen(false); }
       return result;
     });
   };
@@ -61,7 +62,7 @@ export function StorefrontWishlistAction() {
   const addAll = () => startTransition(async () => {
     let latestCart = null;
     for (const item of wishlist.items) { const result = await addToBag(item, false); if (result?.ok) latestCart = result.cart; }
-    if (latestCart) { publishCartView(latestCart); setOpen(false); requestCartDrawerOpen(); }
+    if (latestCart) { publishCartView(latestCart); setOpen(false); }
   });
 
   const clearAll = () => startTransition(async () => {
@@ -84,7 +85,10 @@ export function StorefrontWishlistAction() {
           <ul className="divide-y divide-[#d8b93f]/15">{wishlist.items.map((item) => { const key = itemKey(item); const quantity = quantities[key] ?? 1; return <li key={key} className="relative grid grid-cols-[4.25rem_1fr_2rem] items-start gap-3 py-4">
             <div className="flex flex-col gap-2">{item.media ? <Image src={item.media.url} alt={item.media.alt} width={68} height={82} className="h-[4.5rem] w-[4.25rem] rounded object-cover" unoptimized /> : <div className="h-[4.5rem] rounded bg-[#191519]" />}<div className="flex h-7 items-center justify-between rounded border border-[#d8b93f]/35 px-1 text-xs text-[#f3ebdb]"><button type="button" aria-label={`Decrease ${item.productName} quantity`} onClick={() => setQuantities((current) => ({ ...current, [key]: Math.max(1, quantity - 1) }))}><Minus className="h-3 w-3" /></button><span>{quantity}</span><button type="button" aria-label={`Increase ${item.productName} quantity`} onClick={() => setQuantities((current) => ({ ...current, [key]: Math.min(99, quantity + 1) }))}><Plus className="h-3 w-3" /></button></div></div>
             <div className="min-w-0 pr-1"><p className="text-[10px] tracking-[.18em] text-[#cbb98d]">{item.audience ?? "AURA"}</p><Link onClick={() => setOpen(false)} href={item.productSlug ? `/product/${item.productSlug}` : "/fragrances"} className="mt-1 block truncate font-serif text-lg leading-tight hover:text-[#e5c982]">{item.productName}</Link><p className="mt-1 text-xs text-[#a99e8f]">Eau de Parfum · 100 ml</p><p className="mt-2 text-sm">{item.currentPrice ? formatMinorUnitMoney(item.currentPrice) : "Unavailable"}</p></div>
-            <div className="flex flex-col items-end gap-4"><button type="button" disabled={isPending || item.availability !== "AVAILABLE"} onClick={() => addToBag(item)} aria-label={`Add ${item.productName} to cart`} title="Add to cart" className="p-0 text-[#e5c982] transition-colors hover:text-white disabled:opacity-40"><ShoppingBag className="h-5 w-5" /></button><button type="button" disabled={isPending} onClick={() => item.productSlug && remove(item.productSlug)} aria-label={`Remove ${item.productName} from wishlist`} className="p-0 text-[#cbb98d] hover:text-white"><X className="h-5 w-5" /></button></div>
+            <div className="flex h-full min-h-[5.5rem] flex-col items-end justify-between self-stretch">
+              <button type="button" disabled={isPending || item.availability !== "AVAILABLE"} onClick={() => addToBag(item)} aria-label={`Add ${item.productName} to cart`} title="Add to cart" className="p-0 text-[#e5c982] transition-colors hover:text-white disabled:opacity-40"><ShoppingBag className="h-5 w-5" /></button>
+              <button type="button" disabled={isPending} onClick={() => item.productSlug && remove(item.productSlug)} aria-label={`Remove ${item.productName} from wishlist`} title="Remove from wishlist" className="p-0 text-[#cbb98d] hover:text-white transition-colors"><X className="h-4 w-4" /></button>
+            </div>
           </li>; })}</ul>
           {suggestions.length > 0 && <section className="mt-5 border-t border-[#d8b93f]/20 pt-5"><div className="mb-3 flex items-center justify-between"><h3 className="font-serif text-xl">You might also like</h3><Link onClick={() => setOpen(false)} href="/fragrances" className="text-xs text-[#e5c982]">View All →</Link></div><div className="grid grid-cols-2 gap-3">{suggestions.map((item) => <div key={`suggestion-${itemKey(item)}`} className="overflow-hidden rounded border border-[#d8b93f]/20 bg-[#151216] hover:border-[#d8b93f]/60">{item.media && <Link onClick={() => setOpen(false)} href={item.productSlug ? `/product/${item.productSlug}` : "/fragrances"} className="block"><Image src={item.media.url} alt={item.media.alt} width={160} height={120} className="h-24 w-full object-cover" unoptimized /></Link>}<div className="flex items-end justify-between gap-2 p-2"><Link onClick={() => setOpen(false)} href={item.productSlug ? `/product/${item.productSlug}` : "/fragrances"} className="min-w-0"><p className="truncate font-serif text-sm">{item.productName}</p><p className="mt-1 text-xs text-[#a99e8f]">{item.currentPrice ? formatMinorUnitMoney(item.currentPrice) : "Unavailable"}</p></Link><button type="button" disabled={isPending || item.availability !== "AVAILABLE"} onClick={() => addToBag(item)} aria-label={`Add ${item.productName} to cart`} title="Add to cart" className="shrink-0 rounded border border-[#d8b93f]/70 p-2 text-[#e5c982] hover:bg-[#d8b93f] hover:text-[#17130d] disabled:opacity-40"><ShoppingBag className="h-4 w-4" /></button></div></div>)}</div></section>}
         </>}

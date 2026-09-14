@@ -6,10 +6,10 @@ const header = fs.readFileSync("src/components/storefront/StorefrontHeaderShell.
 const mobile = fs.readFileSync("src/components/storefront/MobileNavigation.tsx", "utf8");
 const styles = fs.readFileSync("src/app/globals.css", "utf8");
 
-for (const label of ["Maison", "Fragrances", "Collections", "New Arrivals", "Gifts", "About"]) {
+for (const label of ["Fragrances", "Collections", "New Arrivals", "Makeup"]) {
   if (!config.includes(label)) throw new Error(`Missing navigation label: ${label}`);
 }
-if ((config.match(/status: "available" \}/g) ?? []).length !== 5 || !config.includes('href: "/"') || !config.includes('href: "/fragrances"') || !config.includes('href: "/collections"') || !config.includes('href: "/new-arrivals"') || !config.includes('href: "/about"')) throw new Error("Maison, Fragrances, Collections, New Arrivals, and About must be the live storefront destinations.");
+if ((config.match(/status: "available" \}/g) ?? []).length !== 3 || !config.includes('href: "/fragrances"') || !config.includes('href: "/collections"') || !config.includes('href: "/new-arrivals"')) throw new Error("Fragrances, Collections, and New Arrivals must remain the live storefront destinations.");
 for (const token of ["aria-expanded", "aria-controls", "Escape", "pointerdown", "onFocus", "onClick", "onMouseEnter"]) {
   if (!controller.includes(token)) throw new Error(`Mega-menu interaction boundary missing: ${token}`);
 }

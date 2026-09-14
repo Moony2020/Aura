@@ -1,15 +1,15 @@
 # AURA Project Status
 
-**Current Phase:** Phase 4 — Authentication & Customer Account  
-**Current Stage:** 4.5 — Account Overview & Profile  
-**Status:** IN PROGRESS — P1 COMPLETE ✅ / P2 COMPLETE ✅ / P3 Final Audit & Documentation IN PROGRESS
-**Last Completed Checkpoint:** Stage 4.5 P2 — Protected Account UI ✅
-**Current Work:** Stage 4.5 P3 Final Audit & Documentation is running under owner approval. P1 established the protected server Account/Profile boundary; P2 added the protected Maison `/account` experience; P3 is completing final regressions, quality gates, cleanup, scoped diff, and documentation reconciliation.
-**Blocking Issues:** None currently. Final Stage 4.5 sign-off remains pending completion of the required P3 regression, build, audit, and documentation evidence.
-**Known Issues:** The host global npm shim points to a missing roaming `npm-cli.js`, so direct local tool invocations are used for verification. Repo-wide `git diff --check` remains non-zero only for documented unrelated baseline whitespace in `src/app/layout.tsx` and `src/components/HeroPortalExperience.tsx`; scoped Stage 4.5 verification passes and those files remain untouched. No browser automation dependency is installed, so pixel-level cross-browser responsive QA remains outside this gate. Production email provider/domain configuration remains owner-supplied; no provider credentials or delivery runtime were invented.
-**Next Stage:** Stage 4.5 P3 — Final Audit & Documentation: IN PROGRESS
-**Next Phase Step:** Stage 4.6 — Address Management: NOT STARTED
-**Last Updated:** 2026-09-11
+**Current Phase:** Phase 5 — Checkout & Payments
+**Current Stage:** 5.5 — Stripe Integration
+**Status:** IN PROGRESS — P0 Goal Contract COMPLETE ✅ / Owner Decisions COMPLETE ✅ / Pre-existing Payment Baseline AUDITED ✅ / Phase Ledger COMPLETE ✅ / P1 COMPLETE ✅ / P2 COMPLETE ✅ / P3 COMPLETE ✅ / P4 IN PROGRESS — EVIDENCE PENDING
+**Last Completed Checkpoint:** Stage 5.5 P3 — Inventory-Gated PaymentIntent Preparation ✅
+**Current Work:** P4 uses the owner-supplied Stripe TEST MODE credentials and provides the approved minimal `/checkout` host plus the isolated Stripe Payment Element client boundary. The host safely shows an unavailable state until an authorized PaymentIntent/client-secret handoff exists; no checkout completion or payment proof is claimed.
+**Blocking Issues:** Production purchasing remains blocked until real TRACKED inventory quantities are owner-supplied. Gift Card voucher VAT classification remains a later verified accounting/tax boundary.
+**Known Issues:** The host global npm shim points to a missing roaming `npm-cli.js`; `corepack npm audit` was used for verification. Current repo-wide `git diff --check` passes; unrelated pre-existing worktree changes were preserved. No browser automation dependency is installed, so pixel-level cross-browser responsive QA remains outside this gate. Production email provider/domain configuration remains owner-supplied; no provider credentials or delivery runtime were invented.
+**Next Stage:** Stage 5.5 P4 — Payment Element and Checkout Client Handoff: EVIDENCE PENDING
+**Next Stage Step:** Complete runtime Payment Element handoff evidence when an authorized PaymentIntent/client-secret context exists; do not start Stage 5.6.
+**Last Updated:** 2026-09-13
 
 Stage 4.1 establishes the Auth.js/AURA boundary, canonical User lifecycle, Credentials + JWT session strategy, server-side `sessionVersion` revocation, dedicated auth persistence model, security/error/cache/route policies, and the rule that Cart/Wishlist merge remains deferred to Stage 4.8. The rejected Credentials-only/database-session combination remains documented as `UnsupportedStrategy`; no login, registration, password, session, recovery, email, or Auth.js runtime behavior is claimed.
 
@@ -27,7 +27,7 @@ Stage 4.3 P2 completed Credentials login and server session authority. Auth.js C
 
 Stage 4.3 P3 completed the Maison login and session controls. `/login` provides accessible email/password fields with a server-action `signIn("credentials")` flow and safe generic failure handling; the Maison Account action links to it. The login page uses the server session helper and exposes a real server-action `signOut` control only when an active session is present. Stage 4.3 P4 then passed the full Atlas-backed Auth.js flow, canonical role/status authority, `sessionVersion` revocation, DISABLED rejection, logout semantics, HTTP matrix, Stage 4.2 regressions, TypeScript, ESLint, build, audit, cleanup, and scoped checks. No Account/Profile, Password Recovery, or Cart/Wishlist merge behavior was started.
 
-Stage 4.5 P1/P2 completed the protected Account Overview and Profile boundary. `/account` derives identity only from the validated Auth.js/sessionVersion authority and renders the canonical safe profile projection (`email`, `firstName`, `lastName`, `phone`). Its server action accepts only the strict `firstName`/`lastName`/`phone` allowlist, derives the user id server-side, revalidates `/account`, and leaves email, role, status, verification, session, password, address, cart, and wishlist authority untouched. P3 Final Audit & Documentation is now in progress; it is re-running the required Atlas, auth, HTTP, commerce, cinematic, quality, cleanup, scoped-diff, and documentation evidence before final sign-off.
+Stage 4.5 P1/P2 completed the protected Account Overview and Profile boundary. `/account` derives identity only from the validated Auth.js/sessionVersion authority and renders the canonical safe profile projection (`email`, `firstName`, `lastName`, `phone`). Its server action accepts only the strict `firstName`/`lastName`/`phone` allowlist, derives the user id server-side, revalidates `/account`, and leaves email, role, status, verification, session, password, address, cart, and wishlist authority untouched. P3 Final Audit & Documentation reconciled stale regression assertions and passed the final Atlas, auth, HTTP, commerce, cinematic, search, quality, cleanup, scoped-diff, and documentation gates. Stage 4.5 is COMPLETE; Stage 4.6 remains READY — NOT STARTED.
 
 Stage 4.4 completed Password Recovery. Forgot-password requests use a generic non-enumerating response, create only eligible ACTIVE/verified-account `PASSWORD_RESET` records, rotate outstanding reset tokens, and send through the fake/in-memory email abstraction. Reset links inspect via non-mutating GET; only explicit POST consumes a token, atomically updates the Argon2id credential, increments `sessionVersion`, invalidates old JWTs, and protects PENDING/DISABLED accounts. Atlas-backed expiry, replay, disabled, rollback, concurrency, hash-only, transport, cleanup, and runtime checks passed. No Account/Profile or Cart/Wishlist merge behavior was started.
 
@@ -40,6 +40,20 @@ Stage 3.9 adds a separate Gift Card stored-value foundation. Codes are generated
 Stage 3.10 connects cinematic `ACQUIRE` to the existing Cart service through a narrow server action. Runtime resolution uses the hidden `cinematic-worlds` collection and canonical Product repository; no seed manifest, price, inventory, cart-owner, token, or snapshot data crosses the client boundary. Exactly one active variant is required, archived/unpublished and UNTRACKED products remain unavailable, successful adds publish the canonical Cart view and request the existing Drawer, and no inventory reservation or cinematic-specific Cart state was added. The six-world business report is emitted by `domain:cinematic:cart:check`.
 
 Stage 3.12 completed. Git history has no granular Phase 2–3 commits: the accepted branch HEAD is `f52d72f` and the current Phase 2–3 route surface is uncommitted, so an exact commit hash for the first bad change is not recoverable. The first offending change was localized by controlled builds: either `src/app/loading.tsx` or `src/app/(storefront)/loading.tsx` alone streamed a 200 shell before route-level `notFound()` ran. Removing both restored true HTTP 404 semantics without changing Product/Collection rules; `src/app/(cinematic)/loading.tsx` remains. A fresh build/server passed the full HTTP matrix, including 200 for valid routes and 404 for archived, unknown, and hidden resources. `npm audit --audit-level=low` passes with 0 vulnerabilities.
+
+Stage 4.6 P1 completed the server-only Address Management boundary. List/create/update/delete operations derive `userId` from validated Auth.js + canonical User/sessionVersion authority, use the existing `MongoAddressRepository`, reject browser-controlled `userId`/`ownerId`, enforce ownership on every mutation, preserve existing default shipping/billing behavior, and reject unauthenticated, PENDING, DISABLED, stale-session, and cross-user access. Atlas-backed integration and runtime smoke checks passed. P2 is READY — NOT STARTED.
+
+Stage 4.6 P2 completed the Account address experience. `/account` lists the current user's addresses and provides accessible create/edit/delete controls backed exclusively by the P1 server actions; no `userId` or `ownerId` is accepted from the client. Existing default shipping/billing fields are exposed without adding business rules. UI contract, TypeScript, ESLint, production build, npm audit, and runtime checks passed. P3 is READY — NOT STARTED.
+
+Stage 4.6 P3 Final Audit & Documentation completed. Address CRUD/ownership/sessionVersion/DISABLED/default semantics, Auth/Account/Profile, HTTP (including `/wishlist → 404`), Commerce/Foundation/Cinematic, TypeScript, full ESLint, production build, npm audit, Atlas cleanup, scoped diff, and documentation reconciliation all PASS. Stage 4.6 is COMPLETE; Stage 4.7 — Order History is IN PROGRESS.
+
+Stage 4.7 P2 completed the read-only Order History surface inside `/account`. The UI renders the P1 safe historical view model with stored order numbers, line-item snapshots, address snapshots, totals, and status/payment/fulfillment presentation. It uses the existing `orderNumber` for the Account surface and does not add a new public identifier or expose Mongo `_id`; no pagination, sorting, Reorder, checkout, Cart/Wishlist merge, or Stage 4.8 semantics were invented. Empty/loading states, responsive/accessibility structure, TypeScript, scoped ESLint, production build, Atlas-backed authenticated runtime, and P2 scoped diff checks passed. P3 Final Audit & Documentation then passed and closed Stage 4.7.
+
+Stage 4.7 P3 Final Audit & Documentation completed. Atlas/Auth.js end-to-end Order History, ownership and cross-user protection, sessionVersion and DISABLED behavior, private cache boundaries, immutable snapshots, historical totals, Account UI, regressions, cleanup, TypeScript, full ESLint, production build, npm audit, and scoped diff checks all PASS. Documentation was reconciled across Project Status, Master Plan, Phase, Architecture, Database, API, Security, Testing, and Changelog. Stage 4.7 is COMPLETE; Stage 4.8 remains READY — NOT STARTED.
+
+Stage 4.8 P0 Goal Contract is COMPLETE ✅, and the five owner decisions are COMPLETE ✅. It preserves the existing separate `aura_guest_cart` and `aura_guest_wishlist` identities, Auth.js/sessionVersion/canonical User authority, server-side Cart/Wishlist services, atomic Cart failure on invalid availability, independent domain cleanup, idempotency, concurrency, failure retention, and post-success guest retirement. The approved P2 handoff amendment moves merge execution to a single internal request after the Auth.js session cookie is issued.
+
+Stage 4.8 Phase Ledger is COMPLETE ✅. It separates P1 merge services/transactions/authorization, P2 post-login integration and independent guest lifecycle, and P3 final audit/documentation. P1, P2, and P3 are COMPLETE ✅.
 
 Stage 1.7 completed normalized fragrance notes, ingredients, accords, families, tiered product relationships, deterministic ordering, and safe MongoDB taxonomy collections. No taxonomy seed data or cinematic product mapping was introduced.
 
@@ -89,4 +103,16 @@ Stage 1.13 integration verification passed across seeded products, references, v
 
 ## Resume Instructions
 
-Read `MASTER-PLAN.md`, then `phases/PHASE-04-AUTH-ACCOUNT.md`. Phase 3 — Commerce is APPROVED / COMPLETE; Stages 3.1–3.12 are complete. Stages 4.1–4.4 are COMPLETE. Stage 4.5 P1/P2 are COMPLETE and P3 Final Audit & Documentation is IN PROGRESS under owner approval. Do not begin Stage 4.6 until Stage 4.5 receives final sign-off.
+Read `MASTER-PLAN.md`, then `phases/PHASE-05-PAYMENTS.md`.
+
+Phase 4 — Authentication & Customer Account is COMPLETE ✅.
+Phase 5 — Checkout & Payments is IN PROGRESS.
+Stages 5.1 and 5.2 are COMPLETE ✅.
+
+Stage 5.3 — Shipping Methods is COMPLETE ✅.
+
+Stage 5.4 — Server Pricing, Tax & Inventory Review is COMPLETE ✅.
+Stage 5.5 — Stripe Integration is IN PROGRESS.
+P0 Goal Contract, Owner Decisions, and the pre-existing payment baseline are COMPLETE/AUDITED ✅; Phase Ledger and P1–P3 are COMPLETE ✅; P4 is IMPLEMENTED — EVIDENCE PENDING. The approved `/checkout` host and isolated Payment Element boundary use TEST MODE configuration; full browser handoff remains pending an authorized PaymentIntent/client-secret context. Repo-wide `git diff --check` is WAIVED for the unrelated owner-authored `globals.css` whitespace exception.
+
+Do not begin P5 or later stages automatically.

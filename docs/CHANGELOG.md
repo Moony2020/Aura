@@ -442,3 +442,14 @@ Deferred intentionally: registration and email delivery flow, Auth.js, JWT/sessi
 - Added the protected Maison `/account` Account Overview and Profile UI over the existing canonical account boundary. The server derives the current user from Auth.js/sessionVersion authority and exposes only email, first name, last name, and phone.
 - Added the exact strict profile allowlist (`firstName`, `lastName`, `phone`) with server-side user ownership, account-route revalidation, accessible pending/success/error UX, and safe same-origin login return handling.
 - Atlas-backed persistence/reload, stale-session and disabled-user protection, protected-field rejection, fixture cleanup, Auth.js and Password Recovery regressions, HTTP 200/404 semantics, TypeScript, scoped ESLint, direct audit, and scoped diff checks passed. P3 and Stage 4.6 remain unstarted.
+
+## 2026-09-12 — Stage 4.7 P3 Final Audit & Documentation
+
+Verified:
+- Order History server boundaries, ownership-scoped list/detail, Auth.js/sessionVersion authority, cross-user rejection, immutable item/address snapshots, historical totals, safe status/payment/fulfillment presentation, and Atlas fixture cleanup pass.
+- The protected `/account` UI renders the read-only P1 view model with `orderNumber` as the customer-facing reference and no MongoDB `_id` exposure, Reorder, checkout, or Stage 4.8 merge behavior.
+- HTTP/Auth/Account/Profile, Commerce/Foundation/Cinematic, TypeScript, full ESLint, production build, npm audit, P1/P2/P3 scoped checks, and documentation reconciliation pass. `/wishlist` remains intentionally 404.
+
+Status:
+- Stage 4.7 — Order History: COMPLETE ✅.
+- Stage 4.8 — Wishlist & Cart Merge Integration: READY — NOT STARTED.

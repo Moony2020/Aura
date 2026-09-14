@@ -377,4 +377,165 @@ At the Stage 4.4 closeout, Password Recovery was COMPLETE ✅ and Stage 4.5 — 
 - Regressions — PASS: real Auth.js Credentials login/session/logout, Password Recovery runtime, and storefront HTTP status matrix (valid storefront/PDP routes 200; invalid PDP and hidden collection 404).
 - TypeScript — PASS. P2-scoped ESLint — PASS. Direct local npm audit — PASS. `STAGE45_P1_SCOPED_DIFF_CHECK` and `STAGE45_P2_SCOPED_DIFF_CHECK` — PASS.
 
-P1/P2 are COMPLETE. P3 is READY — NOT STARTED and requires owner approval; Stage 4.6 was not started.
+P1/P2 are COMPLETE. P3 Final Audit & Documentation is IN PROGRESS under owner approval; Stage 4.6 was not started.
+
+## Stage 4.6 P1 — Server Address Boundaries & Authorization
+
+- `ADDRESS_MANAGEMENT_BOUNDARY_CHECK` — PASS: server-only list/create/update/delete boundary, canonical Auth.js/session authority, strict client input boundary, ownership-scoped repository access, and no UI/P2 surface.
+- `ADDRESS_MANAGEMENT_CHECK` — PASS against Atlas: real persistence, own-address list/create/update/delete, browser-controlled `userId`/`ownerId` rejection, cross-user protection, ACTIVE/verified authority, PENDING/DISABLED rejection, stale `sessionVersion` rejection, and existing default shipping/billing semantics.
+- Runtime smoke — PASS on an isolated development server: `/`, `/reviews`, `/fragrances/women`, `/fragrances/men`, `/new-arrivals`, and `/cart` returned HTTP 200.
+- TypeScript — PASS. Scoped ESLint — PASS. Scoped `git diff --check` — PASS.
+
+P1 is COMPLETE ✅. P2 — Address Management UI & Account Integration is COMPLETE ✅. P3 — Final Audit & Documentation is READY — NOT STARTED and remains owner-gated.
+
+## Stage 4.6 P2 — Address Management UI & Account Integration
+
+- `ACCOUNT_ADDRESSES_UI_CHECK` — PASS: `/account` address list/create/edit/delete UI, P1 action boundary, default semantics, accessibility labels, and no ownership fields or out-of-scope surfaces.
+- Runtime — PASS: protected `/account` redirects unauthenticated users safely to login; public shell, `/reviews`, and `/cart` remain healthy.
+- TypeScript — PASS. Scoped ESLint — PASS. Production build — PASS. `npm audit --audit-level=low` — 0 vulnerabilities.
+
+P2 implementation is COMPLETE in code, but final runtime evidence is still pending; P3 has not started.
+
+## Stage 4.6 P3 — Final Audit & Documentation
+
+- Address CRUD/ownership/sessionVersion/DISABLED/default shipping and billing semantics — PASS against Atlas; all fixtures cleaned up.
+- Auth/Account/Profile regressions — PASS. HTTP matrix — PASS, including `/wishlist → 404` and valid storefront/PDP statuses.
+- Commerce/Foundation/Cinematic regressions — PASS. Navigation, search, product-detail, responsive/accessibility contracts — PASS.
+- TypeScript — PASS. Full ESLint — 0 errors / 0 warnings. Production build — PASS. `npm audit --audit-level=low` — 0 vulnerabilities.
+- `STAGE46_P3_SCOPED_DIFF_CHECK` — PASS. Documentation reconciliation — PASS.
+
+Stage 4.6 P3 is COMPLETE ✅. Stage 4.7 — Order History is IN PROGRESS.
+
+## Stage 4.7 P1 — Server Order History Boundaries & Authorization
+
+- `ORDER_HISTORY_BOUNDARY_STATIC_CHECK` — PASS: server-only read boundary, ownership-scoped repository queries, safe historical view model, and no customer mutation surface.
+- `ORDER_HISTORY_BOUNDARY_CHECK` — PASS against Atlas: own list/detail, cross-user rejection, browser authority-field rejection, immutable snapshot/totals presentation, ACTIVE/verified authority, disabled-after-login rejection, stale `sessionVersion` rejection, and cleanup.
+- Order domain regression — PASS: immutable snapshots, totals, inventory quantities, and transition rules remain enforced.
+- Runtime smoke — PASS: `/` 200, protected `/account` redirects to login, `/reviews` 200, `/cart` 200, and intentional `/wishlist` 404.
+- TypeScript — PASS. P1-scoped ESLint — PASS. P1-scoped diff/whitespace — PASS.
+
+P1 is COMPLETE ✅. P2 — Order History UI & Account Integration is COMPLETE ✅. P3 — Final Audit & Documentation is READY — NOT STARTED.
+
+## Stage 4.7 P2 — Order History UI & Account Integration
+
+- `ORDER_HISTORY_UI_STATIC_CHECK` — PASS: Account integration uses the P1 server boundary, renders safe historical order data, and preserves read-only semantics with empty/loading states.
+- `ORDER_HISTORY_UI_RUNTIME_CHECK` — PASS: authenticated Next `/account` rendered an Atlas-backed owned order number, immutable historical item snapshot, historical total, and read-only detail from the P1 view model; fixture cleanup completed.
+- P1 order-history boundary regression — PASS: ownership, cross-user protection, authority/sessionVersion, status presentation, snapshots, totals, and cleanup remain green.
+- TypeScript — PASS. P2-scoped ESLint — PASS. Production build — PASS. `STAGE47_P2_SCOPED_DIFF_CHECK` — PASS.
+- The Account surface uses the existing `orderNumber` only; no Mongo `_id` URL or new public identifier was added. No pagination, sorting, Reorder, checkout, Cart/Wishlist merge, or Stage 4.8 behavior was introduced.
+
+P2 is COMPLETE ✅. P3 — Final Audit & Documentation is COMPLETE ✅.
+
+## Stage 4.7 P3 — Final Audit & Documentation
+
+- Order History boundary/UI/runtime — PASS: Atlas-backed end-to-end Auth.js flow, ownership-scoped list/detail, cross-user rejection, sessionVersion revocation, DISABLED rejection, immutable item/address snapshots, historical totals, status/payment/fulfillment presentation, read-only controls, and fixture cleanup.
+- Auth/Account/Profile/Address/Recovery/Verification regressions — PASS.
+- HTTP matrix — PASS: public routes and published PDP 200; protected `/account` behavior; archived/unknown PDP and hidden cinematic collection 404; `/wishlist` intentional 404.
+- Commerce/Foundation/Cinematic/Search/Navigation/Product Detail/responsive-accessibility regressions — PASS.
+- TypeScript — PASS. Full ESLint — 0 errors / 0 warnings. Production build — PASS. `npm audit --audit-level=low` — found 0 vulnerabilities.
+- `STAGE47_P1_SCOPED_DIFF_CHECK` — PASS. `STAGE47_P2_SCOPED_DIFF_CHECK` — PASS. `STAGE47_P3_SCOPED_DIFF_CHECK` — PASS. Current repo-wide `git diff --check` — PASS; unrelated worktree changes remain preserved.
+- Documentation reconciliation — PASS across `PROJECT-STATUS.md`, `MASTER-PLAN.md`, `PHASE-04-AUTH-ACCOUNT.md`, `ARCHITECTURE.md`, `DATABASE.md`, `API.md`, `SECURITY.md`, `TESTING.md`, and `CHANGELOG.md`.
+- Confirmed exclusions: no Reorder, customer Order mutation, checkout redesign, Cart/Wishlist merge, Admin Order Management, or Stage 4.8 implementation.
+
+Stage 4.7 is COMPLETE ✅. Stage 4.8 — Wishlist & Cart Merge Integration is IN PROGRESS.
+
+## Stage 4.8 P0 — Goal Contract
+
+- `docs/decisions/STAGE-4.8-GOAL-CONTRACT.md` records the P0 contract based on ADR-023 through ADR-027 and the current Cart/Wishlist/Auth services.
+- Preserved: separate opaque guest identities, canonical Auth.js/sessionVersion User authority, server-side ownership, current inventory rules, deterministic Cart/Wishlist merge direction, idempotency/concurrency requirements, failure retention, and post-success guest retirement.
+- Owner Decisions are COMPLETE ✅: one post-login server merge step, atomic Cart failure for invalid availability/unavailable lines, independent Cart/Wishlist cleanup, per-domain cookie clearing only after success, and no new idempotency marker initially.
+- No merge implementation, login hook, cookie cleanup, checkout redesign, Order mutation, or Stage 4.9 work was started.
+
+P0 is COMPLETE ✅. Phase Ledger is COMPLETE ✅. P1 — Merge Services, Transactions & Authorization is READY — NOT STARTED.
+
+## Stage 4.8 — Phase Ledger
+
+- `docs/decisions/STAGE-4.8-PHASE-LEDGER.md` created from the approved P0 contract and five owner decisions.
+- P1 owns merge services, transactions, authorization, atomic Cart failure, Wishlist deduplication, concurrency, and Atlas proof.
+- P2 owns one post-login server integration step and independent per-domain guest lifecycle/cookie cleanup.
+- P3 owns final audit, quality gates, scoped diff, cleanup, and documentation reconciliation.
+- No implementation, Phase 4.9 work, checkout redesign, Order mutation, or global auth/layout read was started.
+
+Phase Ledger is COMPLETE ✅. P1 is READY — NOT STARTED and requires owner approval.
+
+## Stage 4.8 P1 — Merge Services, Transactions & Authorization
+
+- `stage48:p1:static:check` — PASS: the server-only merge boundary uses canonical Auth.js/sessionVersion/User authority, existing guest token hashing, ownership-scoped Cart/Wishlist records, atomic transactions, and no login callback, cookie-clearing, UI, checkout, or Stage 4.9 integration.
+- `stage48:p1:merge:check` — PASS against Atlas: Cart quantity combination and availability rejection, atomic invalid-cart preservation, guest Cart retirement, Wishlist Product deduplication, independent guest consumption, concurrent duplicate merge safety, and stale-session rejection.
+- TypeScript and P1-scoped ESLint — PASS.
+- `STAGE48_P1_SCOPED_DIFF_CHECK` — PASS.
+
+P1 is COMPLETE ✅. P2 — Login Integration & Guest-State Lifecycle is COMPLETE ✅. P3 — Final Audit & Documentation is IN PROGRESS.
+
+## Stage 4.8 P2 — Login Integration & Guest-State Lifecycle
+
+- `stage48:p2:static:check` — PASS: Credentials login uses one server-side post-login orchestration step, preserves safe callback redirects, keeps merge failures separate from authentication failure, and does not place merge work in Auth.js callbacks, middleware, layouts, or recurring session reads.
+- Browser runtime verification — PASS: real local Credentials login established the protected `/account` session after guest Wishlist activity; the guest token remained inaccessible to browser JavaScript (`document.cookie` exposed no guest token).
+- `stage48:p2:runtime:check` — PASS: orchestration-level proof covers Cart FAIL/Wishlist SUCCESS, Cart SUCCESS/Wishlist FAIL, no guest state, USER-only state, no repeated invocation after cookie retirement, per-domain `Set-Cookie` decisions, stale authority, and DISABLED/invalid authority retention. This does not replace the required full Auth.js HTTP matrix.
+- `stage48:p2:authjs-http:check` — PARTIAL PASS after the approved handoff correction: real HTTP Credentials login returns `303`, the internal `/auth/post-login` request carries the newly established session, and Cart-fail/Wishlist-success plus Cart-success/Wishlist-success cookie/Atlas lifecycle cases pass with redacted headers. The required inverse Wishlist-failure fixture and explicit repeated-login/no-repeat invocation instrumentation remain pending; raw token values were not logged.
+- Cart and Wishlist cookie lifecycle is independent: each matching cookie is expired only after that domain reports `MERGED`; failures retain the guest cookie.
+- TypeScript, full ESLint, production build, and `npm audit` — PASS. `STAGE48_P2_SCOPED_DIFF_CHECK` — PASS.
+
+P2 corrective handoff and final runtime evidence are COMPLETE: the full Auth.js HTTP matrix, actual per-domain `Set-Cookie` capture for both failure permutations, repeated-login/session-read proof, stale sessionVersion, DISABLED authority, Stage 4.3–4.7 regressions, cleanup, and quality gates passed. P3 Final Audit & Documentation is IN PROGRESS and owns the final reconciliation and gate rerun.
+
+## Stage 4.8 P3 — Final Audit & Documentation
+
+P3 is COMPLETE ✅. The audit reran the approved P1/P2 boundaries and the cross-stage regression, quality, cleanup, scoped-diff, and documentation gates. It added no merge behavior and did not begin Stage 4.9.
+
+Evidence: real Auth.js login/merge lifecycle, independent Cart/Wishlist failure retention and cookie cleanup, no recurring merge on session/account/cart reads, repeated-login idempotency, stale `sessionVersion` and `DISABLED` rejection, cross-user protection, Stage 4.3–4.7 regressions, Atlas fixture cleanup, TypeScript, full ESLint (0 errors / 0 warnings), production build, `npm audit` (0 vulnerabilities), `STAGE48_P3_SCOPED_DIFF_CHECK`, and current-status reconciliation — all PASS.
+
+Final state: Stage 4.8 — Wishlist & Cart Merge Integration COMPLETE ✅. P0, Owner Decisions, Phase Ledger, P1, P2, and P3 are complete. Stage 4.9 — Authentication Security Hardening is READY — NOT STARTED.
+
+## Stage 4.5 P3 — Regression Contract Reconciliation
+
+- Navigation checker — updated to the authoritative `src/config/storefront-navigation.ts`: the current approved storefront navigation exposes Fragrances, Collections, and New Arrivals as live destinations; Gifts is not an approved live navigation item in this configuration.
+- Search checker — updated from an obsolete exact JSX composition assertion to the accepted component-isolation contract: `StorefrontSearchAction` is mounted in the Header, while the behavioral overlay contract remains covered by its client-side accessibility, keyboard, API, and navigation assertions.
+- Product-detail checker — updated from obsolete `Fragrance notes` copy to the current semantic PDP contract: `topNotes`/`TOPPNOTER` and the `Recensionsöversikt` review summary are rendered by the canonical Product Detail route.
+- HTTP checker — made `BASE_URL` configurable with a `localhost:3000` default. The standalone `/wishlist` expectation is now `404` because commit `216ea49` (`updated design`, 2026-09-11) deleted the standalone wishlist route and `WishlistPageClient`, while the approved Wishlist experience is the header drawer. This supersedes the earlier Stage 4.5 P3 smoke expectation of `/wishlist → 200`.
+- The reconciliation changes do not weaken product, search, navigation, or HTTP behavior checks; they remove stale implementation/copy assumptions and preserve the current route contract.
+## Stage 4.9 P2 — Transport, Session, Cookie, Cache & Redaction Evidence
+
+- `STAGE49_P2_SECURITY_CHECK` — PASS: explicit AURA same-origin mutation boundary rejects foreign origins; missing Origin remains compatible with the approved non-browser transport contract. Auth.js native endpoints retain Auth.js CSRF behavior, and Next.js Server Actions retain their framework transport boundary.
+- `STAGE49_P2_REDIRECT_CHECK` — PASS: local relative callbacks are accepted; external, protocol-relative, `javascript:`, backslash, and malformed targets are rejected or normalized safely.
+- `STAGE49_P2_HANDOFF_CHECK` — PASS: `/auth/post-login` revalidates fresh Auth.js/sessionVersion/canonical User authority, preserves safe redirect handling, and does not introduce a recurring merge hook.
+- `STAGE49_P2_CACHE_HEADERS_CHECK` — PASS: owned auth mutations and handoff responses use `private, no-store` with the approved security headers; dynamic auth behavior was not globalized.
+- Real Auth.js HTTP evidence — PASS: Credentials login/session/logout, authenticated continuation, Cart FAIL/Wishlist SUCCESS, Cart SUCCESS/Wishlist FAIL, actual redacted per-domain `Set-Cookie` lifecycle, no guest state, USER-only state, repeated-login idempotency, and no merge on session refresh/account/cart reads.
+- Authority and privacy evidence — PASS: stale `sessionVersion`, DISABLED users, cross-user boundaries, token/account-derived limits, trusted-IP null path, and secret/token redaction remained safe.
+- Stage 4.3–4.8 regressions — PASS: login/session/logout, password recovery, Account/Profile, Address, Order History, Cart/Wishlist, Commerce, Stage 4.8 merge, and HTTP/404 matrix. `/login`, `/`, `/reviews`, and `/cart` returned 200; `/wishlist` and hidden/unknown routes retained intentional 404 behavior.
+- `P1_ATLAS_RATE_LIMIT_CHECK` and all P1 Atlas subchecks — PASS. Atlas fixture cleanup — PASS.
+- TypeScript, full ESLint (0 errors / 0 warnings), production build, `corepack npm audit` (`found 0 vulnerabilities`), `git diff --check`, and P2-scoped checks — PASS. The host npm shim remains broken; `corepack npm` was used without changing project dependencies.
+
+P2 is COMPLETE ✅. P3 — Final Audit & Documentation is READY — NOT STARTED. Stage 4.10 has not started.
+
+## Stage 4.9 P3 — Final Audit, Regression, Cleanup & Documentation
+
+- `STAGE49_P2_SECURITY_CHECK`, `STAGE49_P2_REDIRECT_CHECK`, `STAGE49_P2_HANDOFF_CHECK`, and `STAGE49_P2_CACHE_HEADERS_CHECK` — PASS.
+- P1 Atlas rate-limit evidence — PASS: atomic concurrency, thresholds, expiry rollover, key isolation, trusted-IP null path, privacy, and fixture cleanup.
+- Auth.js and recovery runtime — PASS: real Credentials login/session/logout, password recovery, fresh authority, stale `sessionVersion`, DISABLED behavior, and safe redacted handling.
+- Stage 4.8 regression — PASS: both independent Cart/Wishlist failure permutations, actual redacted `Set-Cookie` lifecycle, no recurring merge on session/account/cart reads, and repeated-login idempotency.
+- Prior Phase 4 regressions — PASS: Account/Profile, Address, Order History, Commerce, and current HTTP/404 behavior (`/` 200, `/login` 200, `/reviews` 200, `/cart` 200, `/wishlist` 404, unknown/hidden routes 404).
+- TypeScript — PASS. Full ESLint — PASS (0 errors / 0 warnings). Production build — PASS. `corepack npm audit` — PASS (`0 vulnerabilities`). `git diff --check` and scoped checks — PASS.
+- Documentation reconciliation — PASS. No secrets, raw tokens, credentials, guest cookies, or leftover Stage 4.9 fixtures were recorded or retained. No Stage 4.10 work started.
+
+P3 is COMPLETE ✅. Stage 4.9 — Authentication Security Hardening is COMPLETE ✅. Stage 4.10 — Authentication Tests is READY — NOT STARTED.
+
+## Stage 4.10 — Authentication Tests
+
+- Goal Contract / authoritative Test Plan — PASS.
+- Registration and verification — PASS: Atlas persistence, normalization, duplicate safety, resend rotation, hash-only purpose-bound tokens, expiry, replay, disabled protection, concurrent activation, UI transport, and cleanup.
+- Login/logout/session — PASS: real Auth.js Credentials HTTP flow, native CSRF boundary, canonical User/sessionVersion authority, stale/DISABLED rejection, logout, cookie behavior, and safe errors.
+- Password recovery/reset — PASS: real runtime GET/POST behavior, non-enumeration, atomic reset, replay rejection, sessionVersion increment, and cleanup.
+- Account/Profile, Addresses, and Order History — PASS: protected runtime/domain boundaries, cross-user denial, ownership, snapshots, totals, default semantics, and cleanup.
+- Stage 4.8 Cart/Wishlist merge regression — PASS: both independent failure permutations, actual redacted Set-Cookie lifecycle, idempotency, concurrency, and no merge on session/account/cart reads.
+- Stage 4.9 security regression — PASS: Atlas atomic rate limits, thresholds, rollover, key isolation, trusted-IP null path, same-origin, redirects, handoff, cache headers, and redaction.
+- Current HTTP/404 contracts — PASS: `/` 200, `/login` 200, `/reviews` 200, `/cart` 200, `/wishlist` intentional 404, authenticated `/account` 200, unknown/archived PDP 404, and hidden cinematic collection 404.
+- TypeScript — PASS. Full ESLint — PASS (0 errors / 0 warnings). Production build — PASS. `corepack npm audit` — PASS (`0 vulnerabilities`). Scoped checks, `git diff --check`, Atlas cleanup, and documentation reconciliation — PASS.
+- Required external-system policy — PASS: Atlas and Auth.js runtime evidence executed successfully. The controlled non-production email sender was used; the owner-supplied production email provider/domain was not treated as a completion dependency.
+
+Stage 4.10 is COMPLETE ✅. Stage 4.11 — Phase 4 Sign-Off is READY — NOT STARTED.
+
+## Stage 4.11 — Phase 4 Sign-Off
+
+- Final reconciliation of Stages 4.1–4.10 and Phase 4 acceptance criteria — PASS.
+- Auth/session/authorization, Stage 4.8 merge, Stage 4.9 security, redaction, Atlas cleanup, HTTP/404, TypeScript, full ESLint, production build, `npm audit` (0 vulnerabilities), documentation reconciliation, and `git diff --check` — PASS.
+- Phase 4 is COMPLETE ✅. Phase 5 — Checkout & Payments is READY — NOT STARTED. No Phase 5 work was started.

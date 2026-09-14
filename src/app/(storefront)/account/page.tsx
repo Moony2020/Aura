@@ -2,22 +2,37 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { AccountProfileForm } from "@/components/account/AccountProfileForm";
+import { AccountAddresses } from "@/components/account/AccountAddresses";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { getAccountProfileForAuthority } from "@/server/account/account-profile-service";
 import { getCurrentSessionAuthority } from "@/server/auth/current-session";
+import { listCurrentAddressesForAuthority } from "@/server/account/address-service";
+import { listCurrentOrderHistory } from "@/server/order/order-history-service";
+import { AccountOrderHistory } from "@/components/account/AccountOrderHistory";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Your account",
-  description: "View and update your AURA account profile.",
+  description: "View your AURA profile, addresses, and order history.",
 };
+
+async function OrderHistorySection() {
+  const orders = await listCurrentOrderHistory();
+  return <AccountOrderHistory orders={orders} />;
+}
+
+function OrderHistorySkeleton() {
+  return <section className="account-orders account-orders--loading" aria-busy="true" aria-labelledby="order-history-loading-title"><p className="account-page__eyebrow">ORDER HISTORY</p><h2 id="order-history-loading-title">Loading your purchases…</h2><div className="account-orders__skeleton" /></section>;
+}
 
 export default async function AccountPage() {
   const authority = await getCurrentSessionAuthority();
   if (!authority) redirect("/login?callbackUrl=%2Faccount");
 
   const profile = await getAccountProfileForAuthority(authority);
+  const addresses = await listCurrentAddressesForAuthority(authority);
 
   return (
     <section className="account-page" aria-labelledby="account-title">
@@ -42,6 +57,8 @@ export default async function AccountPage() {
 
         <AccountProfileForm profile={profile} />
       </div>
+      <AccountAddresses initialAddresses={addresses} />
+      <Suspense fallback={<OrderHistorySkeleton />}><OrderHistorySection /></Suspense>
     </section>
   );
 }

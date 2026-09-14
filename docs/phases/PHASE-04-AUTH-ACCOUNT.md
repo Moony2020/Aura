@@ -14,13 +14,13 @@ Phase 1 User/Address domain and Phase 3 Cart/Wishlist persistence. Phase 4 stage
 - [x] 4.2 Registration & Email Validation
 - [x] 4.3 Login, Logout & Sessions
 - [x] 4.4 Password Recovery
-- [ ] 4.5 Account Overview & Profile
-- [ ] 4.6 Address Management
-- [ ] 4.7 Order History
-- [ ] 4.8 Wishlist & Cart Merge Integration
-- [ ] 4.9 Authentication Security Hardening
-- [ ] 4.10 Authentication Tests
-- [ ] 4.11 Phase 4 Sign-Off
+- [x] 4.5 Account Overview & Profile
+- [x] 4.6 Address Management
+- [x] 4.7 Order History (P1/P2/P3 complete)
+- [x] 4.8 Wishlist & Cart Merge Integration (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
+- [x] 4.9 Authentication Security Hardening (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
+- [x] 4.10 Authentication Tests (Goal Contract / Test Plan and full execution complete)
+- [x] 4.11 Phase 4 Sign-Off
 
 ## Phase Acceptance Criteria
 
@@ -32,7 +32,7 @@ Identity flows are server-validated and rate-limited, cookies are secure, author
 
 ## Known Issues
 
-Production email provider/domain configuration is still owner-supplied. The accepted initial path uses `next-auth@5.0.0-beta.32` with JWT sessions; the MongoDB adapter is not part of the accepted path. Password Recovery uses only the controlled fake/in-memory sender; production delivery and rate-limit operations remain owner-supplied follow-up work. Stage 4.5 P1/P2 are complete; P3 Final Audit & Documentation is IN PROGRESS under owner approval.
+Production email provider/domain configuration is still owner-supplied. The accepted initial path uses `next-auth@5.0.0-beta.32` with JWT sessions; the MongoDB adapter is not part of the accepted path. Password Recovery uses only the controlled fake/in-memory sender. Stages 4.5–4.10 are COMPLETE; Stage 4.11 is READY — NOT STARTED.
 
 ## Stage 4.1 — Authentication Architecture
 
@@ -223,7 +223,7 @@ Historical P2 checkpoint: Registration Flow was COMPLETE before P3 began. Atlas-
 
 ## Stage 4.5 — Account Overview & Profile
 
-**Status:** IN PROGRESS — P1 COMPLETE ✅ / P2 COMPLETE ✅ / P3 Final Audit & Documentation IN PROGRESS
+**Status:** COMPLETE ✅ — P1 COMPLETE ✅ / P2 COMPLETE ✅ / P3 Final Audit & Documentation COMPLETE ✅
 
 ### P1/P2 — Server Boundary & Protected Account UI
 
@@ -233,6 +233,42 @@ Historical P2 checkpoint: Registration Flow was COMPLETE before P3 began. Atlas-
 - Atlas-backed fixture verification — PASS: persistence and page reload, tampered authority-field rejection, stale `sessionVersion` rejection, DISABLED-after-login rejection, and exact fixture cleanup.
 - Regressions — PASS: real Auth.js Credentials login/session/logout, Password Recovery runtime, storefront HTTP 200/404 matrix, TypeScript, scoped ESLint, direct npm audit, and P1/P2 scoped whitespace checks.
 
-P3 Final Audit & Documentation is running under owner approval. It is re-running final Atlas/auth, Account/Profile, HTTP, commerce/cinematic, quality, cleanup, scoped-diff, and documentation evidence. Stage 4.6 — Address Management remains out of scope until Stage 4.5 receives final sign-off.
+P3 Final Audit & Documentation reconciled the authoritative navigation, search, PDP, and HTTP contracts and passed the final evidence gates. The superseded expectations are recorded: Gifts is not required, search checks behavior/semantics, PDP checks current semantic structure, standalone `/wishlist` is intentionally 404, and HTTP base URL/port is configurable. Stages 4.5–4.9 are COMPLETE; Stage 4.10 is READY — NOT STARTED.
 
-Stage 4.1 — **COMPLETE ✅**. Owner-approved architecture: **Auth.js Credentials + JWT Sessions with canonical server-side User authorization and `sessionVersion` revocation**. Stage 4.2 — **COMPLETE ✅** with P1, P2, and P3.1–P3.4 complete. Stage 4.3 — **COMPLETE ✅** with P1–P4 complete. Stage 4.4 — **COMPLETE ✅**. Stage 4.5 P1/P2 — **COMPLETE ✅**; P3 Final Audit & Documentation — **IN PROGRESS**.
+Stage 4.1 — **COMPLETE ✅**. Owner-approved architecture: **Auth.js Credentials + JWT Sessions with canonical server-side User authorization and `sessionVersion` revocation**. Stage 4.2 — **COMPLETE ✅** with P1, P2, and P3.1–P3.4 complete. Stage 4.3 — **COMPLETE ✅** with P1–P4 complete. Stage 4.4 — **COMPLETE ✅**. Stage 4.5 — **COMPLETE ✅** with P1/P2 and P3 Final Audit & Documentation complete. Stage 4.6 — **COMPLETE ✅** with P1/P2 and P3 Final Audit & Documentation complete. Stage 4.7 — **COMPLETE ✅** with P1/P2/P3 complete. Stage 4.8 — **COMPLETE ✅** with P0 Goal Contract, Owner Decisions, Phase Ledger, P1, P2, and P3 complete. Stage 4.9 — **COMPLETE ✅** with P0 Goal Contract, Owner Decisions, Phase Ledger, P1, P2, and P3 complete; Stage 4.10 READY — NOT STARTED.
+
+### Stage 4.8 P1 — Merge Services, Transactions & Authorization
+
+**Status:** COMPLETE ✅ — P1 and P2 complete; P3 Final Audit & Documentation COMPLETE ✅.
+
+The server-only merge service composes the existing Cart and Wishlist collections under one fresh Auth.js/sessionVersion/canonical User authority check. Cart merges combine matching lines, validate current published product/variant/inventory sellability, and fail atomically without clipping or dropping unavailable lines; successful guest Carts are retired as `CONVERTED`. Wishlist merges union Product identities transactionally and consume the guest record only after the authenticated write succeeds. Version-scoped writes, ownership predicates, transactions, and Atlas tests cover stale sessions, cross-user boundaries, invalid Cart preservation, deduplication, and concurrent duplicate attempts. Login integration, cookie cleanup, UI, checkout, and Stage 4.9 remain out of scope.
+
+### Stage 4.8 P2 — Login Integration & Guest-State Lifecycle
+
+**Status:** COMPLETE ✅ — final Auth.js runtime evidence passed; P3 Final Audit & Documentation COMPLETE ✅.
+
+Credentials login now establishes the Auth.js session with `redirect: false`, runs one server-side post-login orchestration step, and then follows the existing safe same-origin callback redirect. The orchestration reads only trusted HttpOnly guest Cart/Wishlist cookies, resolves fresh canonical ACTIVE + verified authority, invokes the accepted P1 services independently, and expires only the matching cookie after a successful committed merge. Merge failures do not fail authentication or cross-clear the other domain's cookie. No Auth.js callback, middleware, layout, session-read, checkout, order, UI, or Stage 4.9 integration was added.
+
+### Stage 4.6 P1 — Server Address Boundaries & Authorization
+
+**Status:** COMPLETE ✅ — P1 complete; P2 complete; P3 Final Audit & Documentation COMPLETE ✅.
+
+The server-only Address boundary provides list/create/update/delete operations through the existing `MongoAddressRepository`. The current `userId` is derived only from Auth.js plus `sessionVersion` and the canonical User authority; browser-supplied `userId` and `ownerId` are rejected. Repository access is ownership-scoped for reads and mutations, cross-user access is rejected, and the existing default shipping/billing behavior is preserved without adding new semantics. Atlas-backed integration, strict boundary, TypeScript, ESLint, and runtime smoke checks passed. No UI, checkout, profile expansion, Cart/Wishlist merge, or Stage 4.7 work was started.
+
+### Stage 4.7 P1 — Server Order History Boundaries & Authorization
+
+**Status:** COMPLETE ✅ — P1 complete; P2 READY — NOT STARTED.
+
+The server-only Order History boundary provides ownership-scoped list/detail reads through the existing Order domain and MongoDB persistence. Authority is reloaded through Auth.js, `sessionVersion`, and the canonical ACTIVE + verified User. The safe view model returns stored line-item/address snapshots, historical totals, and current domain status/payment/fulfillment presentation without customer mutation or browser-controlled ownership. Atlas authorization, cross-user, disabled-after-login, stale-session, snapshot integrity, domain, runtime, TypeScript, ESLint, and scoped checks passed. No UI, Reorder, Checkout, Cart/Wishlist merge, Admin Order Management, or Stage 4.8 work was started.
+
+### Stage 4.7 P2 — Order History UI & Account Integration
+
+**Status:** COMPLETE ✅ — P1/P2 complete; P3 READY — NOT STARTED.
+
+The protected `/account` surface now renders the P1 read-only Order History view model with stored `orderNumber`, immutable line-item and address snapshots, historical totals, and safe status/payment/fulfillment presentation. It includes accessible expandable details plus genuine loading and empty states, uses no browser-controlled authority fields, and does not expose Mongo `_id` or add a new public order identifier. No pagination, sorting, Reorder, checkout, Cart/Wishlist merge, Admin Order Management, or Stage 4.8 behavior was introduced. Static UI, authenticated Atlas-backed runtime, TypeScript, scoped ESLint, production build, and scoped diff checks passed. P3 Final Audit & Documentation then passed the final regressions and closed Stage 4.7.
+
+### Stage 4.6 P3 — Final Audit & Documentation
+
+**Status:** COMPLETE ✅ — Stage 4.6 closed; Stage 4.7 P1/P2/P3 complete; Stage 4.8 P0/P1/P2/P3 complete; Stage 4.9 P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete; Stage 4.10 READY — NOT STARTED.
+
+Address CRUD, ownership, cross-user protection, Auth.js/sessionVersion, DISABLED behavior, and existing default shipping/billing semantics passed against Atlas with cleanup. Auth/Account/Profile, HTTP, Commerce/Foundation/Cinematic, TypeScript, full ESLint, production build, npm audit, scoped diff, and documentation reconciliation also passed. No Stage 4.7 implementation was started.

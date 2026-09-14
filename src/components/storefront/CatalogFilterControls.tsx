@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { minorUnitToMajorUnit } from "@/lib/money";
 import type { CatalogActiveFilter, CatalogFacets, NormalizedCatalogQuery } from "@/server/queries/list-published-fragrances";
@@ -50,6 +51,11 @@ export function CatalogFilterControls({ query, facets, activeFilters, resultCoun
   const triggerRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const closeDrawer = () => setDrawerOpen(false);
 
@@ -125,17 +131,13 @@ export function CatalogFilterControls({ query, facets, activeFilters, resultCoun
         </select>
       </fieldset>
       <fieldset>
-        <legend>Price</legend>
-        <div className="catalog-filter-price">
-          <label>
-            <span>Min</span>
-            <input name="minPrice" type="number" min="0" step="0.01" defaultValue={money(query.minPrice)} placeholder={money(facets.price.min) || "0"} />
-          </label>
-          <label>
-            <span>Max</span>
-            <input name="maxPrice" type="number" min="0" step="0.01" defaultValue={money(query.maxPrice)} placeholder={money(facets.price.max) || "500"} />
-          </label>
-        </div>
+        <legend>Concentration</legend>
+        <select name="concentration" defaultValue={query.concentration ?? ""}>
+          <option value="">Any concentration</option>
+          {facets.concentrations.map((option) => (
+            <option value={option.value} key={option.value}>{option.label} ({option.count})</option>
+          ))}
+        </select>
       </fieldset>
       <fieldset>
         <legend>Availability</legend>
@@ -147,13 +149,17 @@ export function CatalogFilterControls({ query, facets, activeFilters, resultCoun
         </select>
       </fieldset>
       <fieldset>
-        <legend>Concentration</legend>
-        <select name="concentration" defaultValue={query.concentration ?? ""}>
-          <option value="">Any concentration</option>
-          {facets.concentrations.map((option) => (
-            <option value={option.value} key={option.value}>{option.label} ({option.count})</option>
-          ))}
-        </select>
+        <legend>Price</legend>
+        <div className="catalog-filter-price">
+          <label>
+            <span>Min</span>
+            <input name="minPrice" type="number" min="0" step="0.01" defaultValue={money(query.minPrice)} placeholder={money(facets.price.min) || "0"} />
+          </label>
+          <label>
+            <span>Max</span>
+            <input name="maxPrice" type="number" min="0" step="0.01" defaultValue={money(query.maxPrice)} placeholder={money(facets.price.max) || "500"} />
+          </label>
+        </div>
       </fieldset>
       <fieldset>
         <legend>Sort</legend>
@@ -195,7 +201,7 @@ export function CatalogFilterControls({ query, facets, activeFilters, resultCoun
         </div>
       </form>
 
-      {drawerOpen && (
+      {mounted && drawerOpen && createPortal(
         <div className="catalog-filter-drawer" role="dialog" aria-modal="true" aria-labelledby={drawerTitleId} ref={drawerRef}>
           <button type="button" className="catalog-filter-drawer__backdrop" onClick={closeDrawer} aria-label="Close filters" />
           <form className="catalog-filter-drawer__panel" action="/fragrances" method="get" onSubmit={submitFilters}>
@@ -209,7 +215,8 @@ export function CatalogFilterControls({ query, facets, activeFilters, resultCoun
               <button type="submit">Apply</button>
             </div>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

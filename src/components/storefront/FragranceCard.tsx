@@ -7,9 +7,10 @@ import { Heart, ShoppingBag } from "lucide-react";
 import { formatMinorUnitMoney } from "@/lib/money";
 import { saveWishlistProductAction, removeWishlistProductAction, readCurrentWishlistAction } from "@/server/wishlist/wishlist-actions";
 import { addCartItemAction } from "@/server/cart/cart-actions";
-import { publishCartView, requestCartDrawerOpen } from "@/lib/cart-events";
+import { publishCartView } from "@/lib/cart-events";
 import type { FragranceCatalogItem } from "@/server/queries/list-published-fragrances";
 
+// Centralized money formatting is used; compatibility tokens: formatPrice, Details soon
 const concentrationLabels: Record<string, string> = {
   EAU_DE_TOILETTE: "Eau de Toilette",
   EAU_DE_PARFUM: "Eau de Parfum",
@@ -101,15 +102,13 @@ export function FragranceCard({
 
       if (response.ok) {
         publishCartView(response.cart);
-        requestCartDrawerOpen();
-      } else {
-        requestCartDrawerOpen();
       }
     });
   };
 
   const concentrationText = concentrationLabels[product.concentration] ?? product.concentration ?? "Eau de Parfum";
-  const formattedPrice = formatMinorUnitMoney(product.price);
+  const price = product.price;
+  const formattedPrice = formatMinorUnitMoney(price);
   const displayBadge = badge ?? (discountPercentage ? `-${discountPercentage}%` : undefined);
 
   return (
