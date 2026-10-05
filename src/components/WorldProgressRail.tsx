@@ -2,11 +2,10 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-const worldIds = ["world-1", "world-2", "world-3"];
+const worldIds = ["world-1", "world-2"];
 const WORLD_LABELS = [
   "Élixir de Rose",
   "Noir Cashmere",
-  "Citrus Vetiver",
 ];
 
 const STEP_PX = 42; // vertical spacing between ticks
@@ -29,21 +28,11 @@ export default function WorldProgressRail() {
       const centerY = vh / 2;
 
       const el2 = document.getElementById("world-2");
-      const el3 = document.getElementById("world-3");
-
       const rect2 = el2?.getBoundingClientRect();
-      const rect3 = el3?.getBoundingClientRect();
 
-      // If user has scrolled past World 3 into reviews or footer
-      if (rect3 && rect3.bottom <= centerY) {
+      // If user has scrolled past World 2 into reviews or footer
+      if (rect2 && rect2.bottom <= centerY) {
         setVisible(false);
-        return;
-      }
-
-      // Check World 3
-      if (rect3 && rect3.top <= centerY && rect3.bottom > centerY) {
-        setActiveIndex(2);
-        setVisible(true);
         return;
       }
 

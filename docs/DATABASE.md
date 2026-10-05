@@ -93,6 +93,16 @@ No production database or existing business data currently exists.
 - Cross-document commerce invariants use sessions and transactions. Single-document invariants are enforced atomically in their repository operation.
 - MongoDB collection validators complement, but never replace, Zod validation at application trust boundaries.
 
+## Stripe PaymentAttempt Correlation Amendment — Stage 5.5
+
+Stripe `paymentAttempts` may contain optional `providerPaymentId`,
+`providerPaymentStatus`, `providerPaymentStatusUpdatedAt`, and
+`providerPaymentConfirmedAt` fields. These are provider-truth metadata, not
+AURA Order or fulfillment states. A partial unique index named
+`payment_attempts_stripe_provider_payment_unique` protects Stripe lookup by
+PaymentIntent ID without requiring historical PayPal documents to contain the
+field. No client secret or raw Stripe object is stored.
+
 ## Stage 1.4 Verification
 
 - MongoDB Atlas is the owner-selected platform.
@@ -138,6 +148,23 @@ The official Auth.js MongoDB adapter is not part of the accepted initial path be
 ## Cart Collection Runtime Policy (Stage 3.3)
 
 `carts` remains a single-document active-cart collection with embedded canonical lines. Stage 3.3 now uses it through `MongoCartRepository` only; callers cannot pass arbitrary Mongo update objects.
+
+`paymentProviderEvents` is the Stage 5.8 provider-event inbox boundary. It
+stores only bounded, verified-event metadata for Stripe and direct PayPal, with
+strict validation and a unique `(provider, providerEventId)` index. Finalized
+records may receive an `expiresAt` 180-day TTL boundary; unresolved retry and
+dead-letter records do not expire while unresolved. Raw webhook payloads,
+signatures, authorization headers, secrets, card data, PAN/CVC, buyer
+credentials, and unnecessary provider PII are excluded. Webhook authenticity
+and processing are implemented through Stage 5.8 P5; P6 owns bounded retry and
+dead-letter behavior.
+
+Stage 5.8 P6 uses `retryCount` as AURA's processing-attempt count. An atomic
+claim increments it only for a winning claim; failures 1–7 remain `RETRYABLE`,
+failure 8 becomes `DEAD_LETTER`, and no attempt 9 is possible. Unresolved
+`RETRYABLE` and `DEAD_LETTER` records have no TTL. Finalized records receive
+the existing 180-day `expiresAt`; stale PROCESSING claims recover through a
+bounded lease.
 
 Runtime policies:
 

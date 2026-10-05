@@ -31,11 +31,14 @@ export function FragranceCard({
   originalPrice?: string;
 }) {
   const [isSaved, setIsSaved] = useState(false);
+  const [cartMessage, setCartMessage] = useState<string | null>(null);
   const [isWishlistPending, startWishlistTransition] = useTransition();
   const [isCartPending, startCartTransition] = useTransition();
 
   const availableVariants = product.variants;
-  const [selectedVariantId, setSelectedVariantId] = useState(availableVariants[0]?.id ?? "");
+  const [selectedVariantId, setSelectedVariantId] = useState(
+    availableVariants.find((variant) => variant.availability === "AVAILABLE")?.id ?? availableVariants[0]?.id ?? "",
+  );
   const selectedVariant = availableVariants.find((variant) => variant.id === selectedVariantId) ?? availableVariants[0];
 
   const imageUrl = product.media?.posterUrl ?? product.media?.url ?? "/assets/prod-bleu-chanel.jpg";
@@ -91,7 +94,12 @@ export function FragranceCard({
     e.stopPropagation();
     if (isCartPending) return;
 
-    if (!selectedVariant || selectedVariant.availability === "OUT_OF_STOCK") return;
+    setCartMessage(null);
+
+    if (!selectedVariant || selectedVariant.availability !== "AVAILABLE") {
+      setCartMessage("This size is currently unavailable.");
+      return;
+    }
 
     startCartTransition(async () => {
       const response = await addCartItemAction({
@@ -102,6 +110,9 @@ export function FragranceCard({
 
       if (response.ok) {
         publishCartView(response.cart);
+        setCartMessage(`${selectedVariant.volumeMl} ml added to your bag.`);
+      } else {
+        setCartMessage(response.error.message || "This fragrance could not be added right now.");
       }
     });
   };
@@ -170,10 +181,14 @@ export function FragranceCard({
         <button
           type="button"
           onClick={handleQuickAdd}
-          disabled={isCartPending}
+          disabled={isCartPending || selectedVariant?.availability === "OUT_OF_STOCK"}
           aria-label={`Quick add ${product.name} to bag`}
-          title="Add to bag"
-          className="absolute bottom-3 right-3 z-10 grid h-10 w-10 cursor-pointer place-items-center rounded-md border border-[#c5a869]/75 bg-[#110f14]/70 text-[#e5c982] shadow-[0_4px_12px_rgba(0,0,0,0.35)] transition-colors hover:bg-[#c5a869] hover:text-[#17130d] active:scale-95"
+          title={selectedVariant?.availability === "OUT_OF_STOCK" ? "Out of stock" : "Add to bag"}
+          className={`absolute bottom-3 right-3 z-10 grid h-10 w-10 place-items-center rounded-md border border-[#c5a869]/75 bg-[#110f14]/70 text-[#e5c982] shadow-[0_4px_12px_rgba(0,0,0,0.35)] transition-colors active:scale-95 ${
+            selectedVariant?.availability !== "OUT_OF_STOCK"
+              ? "cursor-pointer hover:bg-[#c5a869] hover:text-[#17130d]"
+              : "cursor-not-allowed opacity-45"
+          }`}
         >
           <ShoppingBag className="h-5 w-5" strokeWidth={1.65} />
         </button>
@@ -232,8 +247,8 @@ export function FragranceCard({
                 aria-pressed={isSelected}
                 className={`px-2.5 py-1 rounded-md text-[10.5px] tracking-wide transition-all duration-200 ${
                   isSelected
-                    ? "bg-[#c5a869] text-black font-bold shadow-[0_2px_8px_rgba(197,168,105,0.4)]"
-                    : "bg-[#18151c] border border-[#3a3528]/80 text-[#a99e8a] hover:border-[#c5a869]/60 hover:text-[#f3ebdb]"
+                    ? "border-2 border-[#8f743d] bg-[#18151c] text-[#e5c982] font-bold shadow-[0_2px_8px_rgba(143,116,61,0.28)]"
+                    : "bg-[#18151c] border border-[#3a3528]/80 text-[#cfc3ad] font-semibold hover:border-[#c5a869]/60 hover:text-[#f3ebdb]"
                 } ${isOutOfStock ? "cursor-not-allowed opacity-45 line-through" : "cursor-pointer"}`}
                 title={isOutOfStock ? "Out of stock" : undefined}
               >
@@ -245,6 +260,11 @@ export function FragranceCard({
             <span className="text-[10.5px] text-[#8e8474]">Size unavailable</span>
           )}
         </div>
+        {cartMessage ? (
+          <p className="text-[10.5px] text-[#c5a869]" role="status" aria-live="polite">
+            {cartMessage}
+          </p>
+        ) : null}
       </div>
     </div>
   );

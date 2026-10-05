@@ -56,6 +56,61 @@ Auth.js Credentials is mounted at `/api/auth/[...nextauth]` with `session.strate
 
 No application API routes exist at the Phase 0 baseline.
 
+## Stripe Webhook Authenticity — Stage 5.8 P2
+
+`POST /api/webhooks/stripe` is a server-only, dynamic Route Handler. It reads
+the unmodified request body with `request.text()`, enforces a 128 KiB UTF-8
+limit, extracts `Stripe-Signature`, and verifies the payload with Stripe's
+`constructEvent` boundary using server-only `STRIPE_WEBHOOK_SECRET`. Missing,
+malformed, oversized, or invalidly signed input is rejected with a safe response.
+P2 does not persist an event or process payment state; P3 owns trusted event
+processing and idempotency.
+
+## Stripe PaymentAttempt Correlation Amendment — Stage 5.5
+
+Stripe preparation creates or reuses the PaymentIntent through the existing
+server-side idempotency key, then persists its server-returned `providerPaymentId`
+and trusted `providerPaymentStatus` on the canonical Stripe payment attempt
+before returning the Stripe client secret. The client secret is not persisted;
+webhook correlation will use the server-side PaymentIntent ID only.
+
+## PayPal Webhook Authenticity — Stage 5.8 P4
+
+`POST /api/webhooks/paypal` is a server-only, dynamic Route Handler. It reads
+the raw body once, verifies PayPal's official CRC32/RSA signature using the
+transmission headers and server-only `PAYPAL_WEBHOOK_ID`, and acknowledges only
+after successful verification. It does not process events or perform payment,
+order, inventory, or email mutations; P5 owns that handoff.
+
+## PayPal Event Processing — Stage 5.8 P5
+
+After P4 verification, the route allowlists the active direct-PayPal Orders v2
+approval/capture evidence and excludes marketplace-only order completion and
+refunds. Events are persisted once in `paymentProviderEvents`, correlated by
+server-owned order/capture references, and reconciled without webhook-triggered
+Capture. Missing correlation is retryable; verified unsupported events are
+retained safely. P6 owns the full retry/dead-letter policy.
+
+## Webhook Retry and Dead-Letter Operations — Stage 5.8 P6
+
+The shared inbox atomically claims `RECEIVED`/`RETRYABLE` events and counts
+actual winning processing attempts from 1 through 8. Transient failures return
+non-2xx while `RETRYABLE`; the eighth durable failure becomes `DEAD_LETTER` and
+may be safely acknowledged. `PROCESSED`, `VERIFIED_UNSUPPORTED`, and
+`DEAD_LETTER` duplicates do not create another attempt. There is no public
+retry or admin endpoint; external resend evidence belongs to P7.
+
+## Stripe Event Processing — Stage 5.8 P3
+
+After P2 authenticity succeeds, the canonical Stripe webhook processor
+allowlists `payment_intent.processing`, `payment_intent.succeeded`, and
+`payment_intent.payment_failed`. It persists verified safe metadata in the
+`paymentProviderEvents` inbox, correlates by Stripe PaymentIntent ID, retrieves
+current server-side Stripe state, and updates provider truth idempotently.
+Duplicates are acknowledged safely, missing attempts remain retryable, and
+unsupported verified events are retained as `VERIFIED_UNSUPPORTED`. P3 creates
+no Order, email, confirmation page, or inventory lifecycle mutation.
+
 ## Stage 3.1 Commerce Mutation Boundary
 
 Future cart mutations use a shared server/application service layer regardless of transport.

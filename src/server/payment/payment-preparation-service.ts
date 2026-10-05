@@ -11,6 +11,7 @@ export type PaymentPreparationInput = {
   lines: ReadonlyArray<{ variantId: string; quantity: number }>;
   amountMinor: number;
   metadata: Readonly<Record<string, string>>;
+  reservationOwnerId?: string;
   now?: Date;
 };
 
@@ -51,9 +52,24 @@ export class PaymentPreparationService {
     const reservations: string[] = [];
 
     try {
+      const existingReservations = input.reservationOwnerId && this.inventory.findActiveByOrderId
+        ? await this.inventory.findActiveByOrderId(input.reservationOwnerId)
+        : [];
+      const reusedReservationIds = new Set<string>();
       for (const line of input.lines) {
-        const reservation = await this.inventory.reserve(line.variantId, line.quantity, expiresAt);
-        reservations.push(reservation.id);
+        const reusable = existingReservations.find((candidate) =>
+          !reusedReservationIds.has(candidate.id)
+          && candidate.variantId === line.variantId
+          && candidate.quantity === line.quantity
+          && candidate.expiresAt > now,
+        );
+        if (reusable) {
+          reusedReservationIds.add(reusable.id);
+          reservations.push(reusable.id);
+        } else {
+          const reservation = await this.inventory.reserve(line.variantId, line.quantity, expiresAt, input.reservationOwnerId);
+          reservations.push(reservation.id);
+        }
       }
 
       const providerPayment = await this.provider.createPaymentAttempt({

@@ -12,12 +12,21 @@ Product, cart, inventory, authentication, and order foundations.
 
 5.1 checkout architecture; 5.2 contact/address; 5.3 shipping; 5.4 pricing/tax/inventory review; 5.5 Stripe; 5.6 PayPal; 5.7 wallet eligibility; 5.8 webhooks/idempotency; 5.9 orders; 5.10 failures/cancellation; 5.11 refunds; 5.12 success/cancel routes; 5.13 security review; 5.14 tests; 5.15 sign-off.
 
-Stages 5.1–5.4 are **COMPLETE**. Stage 5.5 P0 Goal Contract is complete;
-Stripe Owner Decisions and the pre-existing payment baseline audit are
-complete; its Phase Ledger and P1–P3 are COMPLETE ✅. P4 is IMPLEMENTED —
-EVIDENCE PENDING using Stripe TEST MODE configuration; full browser handoff
-requires an approved checkout host boundary. Stages 5.6–5.15 are
-**NOT STARTED**.
+Stages 5.1–5.4 are **COMPLETE**. Stage 5.5 P0, Owner Decisions,
+pre-existing payment baseline, Phase Ledger, and P1–P4 are COMPLETE ✅.
+P5 — Stage 5.5 Audit and Documentation Reconciliation is COMPLETE ✅ after
+the verified real Product → Cart → /checkout → Stripe Payment Element path.
+The narrow Stripe correlation amendment is also COMPLETE ✅: new Stripe
+attempts persist the server-returned PaymentIntent identity and provider-truth
+status before client-secret return; PayPal remains unchanged.
+Stage 5.6 PayPal Integration is COMPLETE ✅ after P0–P5 verified the real
+Sandbox Product → Cart → /checkout → PayPal approval → server Capture path.
+Stage 5.7 is COMPLETE ✅ under the superseding owner decision. Stripe cards
+and direct PayPal are active; Apple Pay, Google Pay, and Klarna are Coming soon
+and cannot initiate payment. Stage 5.8 Goal Contract, Owner Decisions, and
+Phase Ledger are COMPLETE ✅; P1, P2, P3, P4, P5, and P6 are COMPLETE ✅. Stage 5.8 P7 is
+READY — NOT STARTED. Stages 5.9–5.15
+are **NOT STARTED**.
 
 ## Phase Acceptance Criteria
 
@@ -32,7 +41,9 @@ checkout UI was introduced.
 
 ## Known Issues
 
-Merchant credentials and wallet eligibility remain future owner dependencies.
+Merchant credentials and real wallet activation remain future owner
+dependencies. The current checkout intentionally has no active Express
+Checkout wallet path.
 Concrete tax and shipping business rules are assigned to Stages 5.4 and 5.3.
 
 ## Architecture Decisions
@@ -153,8 +164,8 @@ Gift Card liability, and provider behavior remain later runtime boundaries.
 
 P2 introduced no inventory reservation, stock mutation, checkout, pricing/tax
 runtime, ShippingQuote, Gift Card redemption, UI, Order, Payment, Stripe,
-PayPal, wallet, webhook, credential, or Stage 5.5+ behavior. P3 — Contract
-Audit & Documentation Reconciliation is READY — NOT STARTED.
+PayPal, wallet, webhook, credential, or Stage 5.5+ behavior. Later Stage 5.5
+runtime and audit status is recorded in the current Stage 5.5 section below.
 
 Stage 5.3 P3 Final Audit & Documentation completed. The shipping contract is
 consistent across Phase 5 status, roadmap, and Stage 5.3 decision records;
@@ -183,7 +194,40 @@ P3 — COMPLETE ✅
 
 Pricing, tax, and inventory runtime implementation has not started.
 
-Stage 5.5 — Stripe Integration: READY — NOT STARTED
+Stage 5.5 — Stripe Integration: COMPLETE ✅
+P0 — COMPLETE ✅
+Owner Decisions — COMPLETE ✅
+Pre-existing Payment Baseline — AUDITED ✅
+Phase Ledger — COMPLETE ✅
+P1 — COMPLETE ✅
+P2 — COMPLETE ✅
+P3 — COMPLETE ✅
+P4 — COMPLETE ✅
+P5 — Audit and Documentation Reconciliation: COMPLETE ✅
+
+Stage 5.6 — PayPal Integration: COMPLETE ✅
+P0 Goal Contract — COMPLETE ✅
+Owner Decisions — COMPLETE ✅
+Phase Ledger — COMPLETE ✅
+P1 — PayPal Server Boundary and OAuth Adapter: COMPLETE ✅
+P2 — PayPal Order Creation and Browser Approval Boundary: COMPLETE ✅
+P3 — Server Capture, Retry, and Reservation Rollback: COMPLETE ✅
+P4 — Real PayPal Sandbox Commerce Verification: COMPLETE ✅
+P5 — PayPal Audit and Documentation Reconciliation: COMPLETE ✅
+PayPal Runtime — VERIFIED ✅
+Stage 5.7 — COMPLETE ✅
+Stage 5.8 Goal Contract — COMPLETE ✅
+Stage 5.8 Owner Decisions — COMPLETE ✅
+Stage 5.8 Phase Ledger — COMPLETE ✅
+Stage 5.8 P1 — COMPLETE ✅
+Stage 5.8 P2 — COMPLETE ✅
+Stage 5.8 Runtime — P3 COMPLETE ✅
+Stage 5.8 P4 — COMPLETE ✅
+Stage 5.8 P5 — COMPLETE ✅
+Stage 5.8 P6 — COMPLETE ✅
+Stage 5.8 P7 — READY — NOT STARTED
+Stages 5.9–5.15 — NOT STARTED
 
 ATLAS_STOP:
-Awaiting owner approval before Stage 5.5 — Stripe Integration.
+Stage 5.7 is COMPLETE ✅ under the superseding owner decision.
+Awaiting owner approval before Stage 5.8 implementation P7 — External webhook evidence and security regression.

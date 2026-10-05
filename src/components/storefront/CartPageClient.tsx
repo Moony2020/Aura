@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { X } from "lucide-react";
 import { useState, useTransition } from "react";
 
 import { ERROR_CODES } from "@/lib/errors/error-codes";
@@ -36,6 +37,19 @@ function safeMessage(response: CartActionResponse) {
 
 function isConflictResponse(response: CartActionResponse) {
   return !response.ok && response.error.code === ERROR_CODES.CONFLICT;
+}
+
+const concentrationLabels: Record<string, string> = {
+  EAU_DE_TOILETTE: "Eau de Toilette",
+  EAU_DE_PARFUM: "Eau de Parfum",
+  EAU_DE_PARFUM_INTENSE: "Eau de Parfum Intense",
+  EXTRAIT_DE_PARFUM: "Extrait de Parfum",
+  PARFUM: "Parfum",
+};
+
+function formatConcentration(value: string | null) {
+  if (!value) return "Fragrance";
+  return concentrationLabels[value] ?? value.replaceAll("_", " ").toLowerCase().replace(/(^| )\w/g, (letter) => letter.toUpperCase());
 }
 
 export function CartPageClient({ initialCart, initialError = null }: CartPageClientProps) {
@@ -173,13 +187,14 @@ export function CartPageClient({ initialCart, initialError = null }: CartPageCli
                     )}
                   </div>
                   <div className="cart-page-line__details">
+                    <span className="cart-page-line__audience">{item.audience ?? "FRAGRANCE"}</span>
                     {item.productSlug ? (
                       <Link href={`/product/${item.productSlug}`}>{item.productName}</Link>
                     ) : (
                       <strong>{item.productName}</strong>
                     )}
-                    <span>{item.variantLabel}</span>
-                    <span className="cart-page-line__availability">{availabilityLabel(item)}</span>
+                    <span>{[formatConcentration(item.concentration), item.variantLabel].filter(Boolean).join(" · ")}</span>
+                    <span className="sr-only">{availabilityLabel(item)}</span>
                     <div className="cart-quantity-stepper" aria-label={`${item.productName} quantity controls`}>
                       <button
                         type="button"
@@ -202,9 +217,15 @@ export function CartPageClient({ initialCart, initialError = null }: CartPageCli
                   </div>
                   <div className="cart-page-line__money">
                     <strong>{item.lineTotal ? formatMinorUnitMoney(item.lineTotal) : "—"}</strong>
-                    {item.unitPrice && <span>{formatMinorUnitMoney(item.unitPrice)} each</span>}
-                    <button type="button" onClick={() => removeLine(item.lineId)} disabled={pendingLineId === item.lineId || isPending}>
-                      {pendingLineId === item.lineId ? "Removing..." : "Remove"}
+                    <button
+                      type="button"
+                      className="cart-page-line__remove"
+                      onClick={() => removeLine(item.lineId)}
+                      disabled={pendingLineId === item.lineId || isPending}
+                      aria-label={`Remove ${item.productName} from bag`}
+                      title="Remove from bag"
+                    >
+                      <X aria-hidden="true" />
                     </button>
                   </div>
                 </li>
@@ -225,6 +246,11 @@ export function CartPageClient({ initialCart, initialError = null }: CartPageCli
             </div>
             <p>Tax, shipping, discounts, gift cards, and payment are introduced in later commerce stages.</p>
             {!cart.checkoutEligible && <p>Some items may need attention before checkout becomes available.</p>}
+            {cart.checkoutEligible && (
+              <Link href="/checkout" className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-[#c5a869] px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#17130d]">
+                Continue to checkout
+              </Link>
+            )}
             <button type="button" onClick={clearBag} disabled={isPending}>Clear Bag</button>
           </aside>
         </div>

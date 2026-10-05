@@ -1,15 +1,15 @@
 # AURA Project Status
 
 **Current Phase:** Phase 5 — Checkout & Payments
-**Current Stage:** 5.5 — Stripe Integration
-**Status:** IN PROGRESS — P0 Goal Contract COMPLETE ✅ / Owner Decisions COMPLETE ✅ / Pre-existing Payment Baseline AUDITED ✅ / Phase Ledger COMPLETE ✅ / P1 COMPLETE ✅ / P2 COMPLETE ✅ / P3 COMPLETE ✅ / P4 IN PROGRESS — EVIDENCE PENDING
-**Last Completed Checkpoint:** Stage 5.5 P3 — Inventory-Gated PaymentIntent Preparation ✅
-**Current Work:** P4 uses the owner-supplied Stripe TEST MODE credentials and provides the approved minimal `/checkout` host plus the isolated Stripe Payment Element client boundary. The host safely shows an unavailable state until an authorized PaymentIntent/client-secret handoff exists; no checkout completion or payment proof is claimed.
+**Current Stage:** 5.8 — Payment Webhooks & Idempotency
+**Status:** Stage 5.7 Wallet Eligibility COMPLETE ✅ — Stage 5.8 Goal Contract COMPLETE ✅ — Owner Decisions COMPLETE ✅ — Phase Ledger COMPLETE ✅ — P1 COMPLETE ✅ — P2 COMPLETE ✅ — Stripe correlation amendment COMPLETE ✅ — P3 COMPLETE ✅ — P4 COMPLETE ✅ — P5 COMPLETE ✅ — P6 COMPLETE ✅
+**Last Completed Checkpoint:** Stage 5.8 P6 — Cross-provider retry, dead-letter, and ordering ✅
+**Current Work:** Verified Stripe and PayPal events use the durable provider-event inbox, server-side provider retrieval, canonical identifiers, monotonic trusted updates, bounded eight-attempt processing, lease recovery, and dead-letter protection. P7 has not started.
 **Blocking Issues:** Production purchasing remains blocked until real TRACKED inventory quantities are owner-supplied. Gift Card voucher VAT classification remains a later verified accounting/tax boundary.
 **Known Issues:** The host global npm shim points to a missing roaming `npm-cli.js`; `corepack npm audit` was used for verification. Current repo-wide `git diff --check` passes; unrelated pre-existing worktree changes were preserved. No browser automation dependency is installed, so pixel-level cross-browser responsive QA remains outside this gate. Production email provider/domain configuration remains owner-supplied; no provider credentials or delivery runtime were invented.
-**Next Stage:** Stage 5.5 P4 — Payment Element and Checkout Client Handoff: EVIDENCE PENDING
-**Next Stage Step:** Complete runtime Payment Element handoff evidence when an authorized PaymentIntent/client-secret context exists; do not start Stage 5.6.
-**Last Updated:** 2026-09-13
+**Next Stage:** Stage 5.8 P7 — External webhook evidence and security regression: READY — NOT STARTED
+**Next Stage Step:** Await owner approval before Stage 5.8 P7. Do not begin Stage 5.9.
+**Last Updated:** 2026-09-16
 
 Stage 4.1 establishes the Auth.js/AURA boundary, canonical User lifecycle, Credentials + JWT session strategy, server-side `sessionVersion` revocation, dedicated auth persistence model, security/error/cache/route policies, and the rule that Cart/Wishlist merge remains deferred to Stage 4.8. The rejected Credentials-only/database-session combination remains documented as `UnsupportedStrategy`; no login, registration, password, session, recovery, email, or Auth.js runtime behavior is claimed.
 
@@ -112,7 +112,68 @@ Stages 5.1 and 5.2 are COMPLETE ✅.
 Stage 5.3 — Shipping Methods is COMPLETE ✅.
 
 Stage 5.4 — Server Pricing, Tax & Inventory Review is COMPLETE ✅.
-Stage 5.5 — Stripe Integration is IN PROGRESS.
-P0 Goal Contract, Owner Decisions, and the pre-existing payment baseline are COMPLETE/AUDITED ✅; Phase Ledger and P1–P3 are COMPLETE ✅; P4 is IMPLEMENTED — EVIDENCE PENDING. The approved `/checkout` host and isolated Payment Element boundary use TEST MODE configuration; full browser handoff remains pending an authorized PaymentIntent/client-secret context. Repo-wide `git diff --check` is WAIVED for the unrelated owner-authored `globals.css` whitespace exception.
+Stage 5.5 — Stripe Integration is COMPLETE ✅.
+P0 Goal Contract, Owner Decisions, pre-existing payment baseline, Phase Ledger, P1–P4, and P5 Final Audit are COMPLETE ✅ over the verified real Product → Cart → `/checkout` Payment Element boundary using TEST MODE configuration. Repo-wide `git diff --check` passed; CRLF notices are informational.
 
-Do not begin P5 or later stages automatically.
+Stage 5.6 P4 verification is COMPLETE ✅. The verified real Sandbox chain used
+the canonical 758.00 SEK Cart, a fresh tracked reservation, a new PayPal Order,
+real Buyer approval, server-side verification, and one successful server-side
+Capture. The old expired Order remained uncaptured. No AURA Order, Order number,
+Confirmation page, or webhook processing was created. P5 is READY — NOT STARTED;
+do not begin it or Stage 5.7 automatically.
+
+Stage 5.7 P1 — Stripe Express Checkout Foundation is COMPLETE ✅. `/checkout`
+now mounts Stripe's Express Checkout Element within the existing Stripe Elements
+root after the already-authorized card PaymentIntent/client-secret handoff. The
+boundary allows only Apple Pay and Google Pay, suppresses those wallets in the
+card Payment Element to avoid intentional duplication, preserves direct PayPal,
+and follows Stripe eligibility without fake buttons. P1 performs no new payment,
+reservation, capture, order, webhook, or commercial-state mutation. Real wallet
+domain/device evidence remains NOT YET VERIFIED; P2 is READY — NOT STARTED.
+
+Stage 5.7 P2 — Server-authoritative wallet payment preparation is COMPLETE ✅.
+The future Express Checkout handoff reuses the existing server path for
+canonical Cart review, SEK amount/shipping, tracked-inventory reservation,
+PaymentIntent preparation, and stable idempotency. Browser wallet data remains
+non-authoritative; no wallet payment, capture, order, webhook, or commercial
+mutation was introduced. P3 is READY — NOT STARTED.
+
+Stage 5.7 P3 — Apple Pay Eligibility and Rendering is COMPLETE ✅. Apple Pay
+uses only Stripe Express Checkout on `/checkout`, follows Stripe's real
+eligibility result, is not duplicated in the card Payment Element, and has no
+direct Apple merchant integration. No real Apple Pay payment was attempted;
+HTTPS/domain/device evidence remains NOT YET VERIFIED. P4 is READY — NOT
+STARTED.
+
+Stage 5.7 P4 — Google Pay Eligibility and Rendering is COMPLETE ✅. Google Pay
+uses only Stripe Express Checkout on `/checkout`, follows Stripe eligibility,
+is not duplicated in the card Payment Element, and has no direct Google Pay
+integration or token storage. Apple Pay, cards, and direct PayPal regressions
+pass. No real Google Pay payment was attempted; HTTPS/domain/device evidence
+remains NOT YET VERIFIED. P5 is READY — NOT STARTED.
+
+Stage 5.7 P5 — Fallback and Cross-Provider Regression is COMPLETE ✅. Controlled
+no-wallet, Apple-only, Google-only, and both-eligible cases remain usable;
+unavailable wallets are hidden without fake/empty UI, while cards and direct
+PayPal remain available. Cancellation/error, accessibility, responsive,
+server-authority, secret-boundary, Stripe, and PayPal regression checks pass.
+P6 local readiness is implemented — NOT YET VERIFIED for real external
+HTTPS/domain/device evidence.
+
+Stage 5.7 P6 — HTTPS/Domain/Device External Verification is IMPLEMENTED — NOT
+YET VERIFIED. Local readiness checks pass and confirm no domain invention,
+registration, deployment, or direct Apple/Google wallet integration. Because
+the required external environment has no configured HTTPS domain or compatible
+verification devices, real wallet evidence is intentionally deferred and is
+not an implementation failure. The superseding owner decision now defers wallet
+activation and makes Stage 5.7 COMPLETE ✅ without claiming external wallet
+verification.
+
+Stage 5.7 P7 — Final Audit and Documentation Reconciliation is COMPLETE ✅.
+The method allowlist, provider ownership, server authority, secret boundary,
+fallback behavior, Stripe/PayPal regressions, no-Order/no-webhook/no-confirmation
+invariants, and documentation reconciliation passed. TypeScript, ESLint,
+production build, dependency audit, runtime routes, and diff checks passed.
+The current checkout exposes only Stripe cards and direct PayPal as active
+payment paths; Apple Pay, Google Pay, and Klarna are AURA UI-only Coming soon
+options with no payment initiation or commercial mutation.

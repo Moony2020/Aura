@@ -28,6 +28,19 @@ const emptyCart: CartViewModel = {
   version: 0,
 };
 
+const concentrationLabels: Record<string, string> = {
+  EAU_DE_TOILETTE: "Eau de Toilette",
+  EAU_DE_PARFUM: "Eau de Parfum",
+  EAU_DE_PARFUM_INTENSE: "Eau de Parfum Intense",
+  EXTRAIT_DE_PARFUM: "Extrait de Parfum",
+  PARFUM: "Parfum",
+};
+
+function formatConcentration(value: string | null) {
+  if (!value) return "Fragrance";
+  return concentrationLabels[value] ?? value.replaceAll("_", " ").toLowerCase().replace(/(^| )\w/g, (letter) => letter.toUpperCase());
+}
+
 function focusableElements(container: HTMLElement | null) {
   if (!container) return [];
   return Array.from(
@@ -35,14 +48,6 @@ function focusableElements(container: HTMLElement | null) {
       'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
     ),
   ).filter((element) => !element.hasAttribute("disabled") && element.getAttribute("aria-hidden") !== "true");
-}
-
-function availabilityLabel(item: CartViewItem) {
-  if (item.availability === "AVAILABLE" && !item.quantityValid) return "Quantity needs adjustment";
-  if (item.availability === "AVAILABLE") return "Available";
-  if (item.availability === "OUT_OF_STOCK") return "Out of stock";
-  if (item.availability === "UNTRACKED") return "Online availability currently unavailable";
-  return "Unavailable";
 }
 
 function safeMessage(response: CartActionResponse) {
@@ -249,7 +254,6 @@ export function StorefrontCartAction() {
             </div>
 
             <div className="storefront-cart-drawer__status" aria-live="polite">
-              {status === "loading" && "Refreshing your bag from the Maison..."}
               {message}
             </div>
 
@@ -273,20 +277,22 @@ export function StorefrontCartAction() {
                   {cart.items.map((item) => (
                     <li className={`storefront-cart-line storefront-cart-line--${item.availability.toLowerCase().replaceAll("_", "-")}`} key={item.lineId}>
                       <div className="storefront-cart-line__media">
-                        {item.media ? (
-                          <Image src={item.media.url} alt={item.media.alt} fill sizes="96px" unoptimized />
-                        ) : (
-                          <span aria-hidden="true">A</span>
-                        )}
+                        <div className="storefront-cart-line__thumb">
+                          {item.media ? (
+                            <Image src={item.media.url} alt={item.media.alt} fill sizes="72px" unoptimized />
+                          ) : (
+                            <span aria-hidden="true">A</span>
+                          )}
+                        </div>
                       </div>
                       <div className="storefront-cart-line__body">
+                        <span className="storefront-cart-line__audience">{item.audience ?? "FRAGRANCE"}</span>
                         {item.productSlug ? (
                           <Link href={`/product/${item.productSlug}`} onClick={closeDrawer}>{item.productName}</Link>
                         ) : (
                           <strong>{item.productName}</strong>
                         )}
-                        <span>{item.variantLabel}</span>
-                        <span className="storefront-cart-line__availability">{availabilityLabel(item)}</span>
+                        <span>{[formatConcentration(item.concentration), item.variantLabel].filter(Boolean).join(" · ")}</span>
                         <div className="cart-quantity-stepper" aria-label={`${item.productName} quantity controls`}>
                           <button
                             type="button"
@@ -309,9 +315,15 @@ export function StorefrontCartAction() {
                       </div>
                       <div className="storefront-cart-line__price">
                         <strong>{item.lineTotal ? formatMinorUnitMoney(item.lineTotal) : "—"}</strong>
-                        {item.unitPrice && <span>{formatMinorUnitMoney(item.unitPrice)} each</span>}
-                        <button type="button" onClick={() => removeLine(item.lineId)} disabled={pendingLineId === item.lineId || isPending}>
-                          {pendingLineId === item.lineId ? "Removing..." : "Remove"}
+                        <button
+                          type="button"
+                          className="storefront-cart-line__remove"
+                          onClick={() => removeLine(item.lineId)}
+                          disabled={pendingLineId === item.lineId || isPending}
+                          aria-label={`Remove ${item.productName} from bag`}
+                          title="Remove from bag"
+                        >
+                          <X aria-hidden="true" />
                         </button>
                       </div>
                     </li>
@@ -323,10 +335,10 @@ export function StorefrontCartAction() {
                     <span>Subtotal</span>
                     <strong>{formatMinorUnitMoney(cart.subtotal)}</strong>
                   </div>
-                  <p>{cart.checkoutEligible ? "Checkout will be introduced in a later stage." : "Some items may need attention before checkout becomes available."}</p>
+                  <p>{cart.checkoutEligible ? "Ready for checkout." : "Review your bag before checkout."}</p>
                   <div className="storefront-cart-summary__actions">
                     <Link href="/cart" onClick={closeDrawer}>View Bag</Link>
-                    <button type="button" onClick={clearBag} disabled={isPending}>Clear Bag</button>
+                    <button className="storefront-cart-summary__clear" type="button" onClick={clearBag} disabled={isPending}>Clear Bag</button>
                   </div>
                 </div>
               </>

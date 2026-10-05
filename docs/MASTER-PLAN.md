@@ -116,15 +116,15 @@ Stage 4.5 P1/P2 adds only the protected Account Overview and Profile surface. `/
 
 ## Phase 5 — Checkout & Payments
 
-Status: **IN PROGRESS**. Stages 5.1–5.4 are COMPLETE; Stage 5.5 is IN PROGRESS with P1–P3 COMPLETE and P4 IMPLEMENTED — EVIDENCE PENDING. Full browser handoff requires an approved checkout host boundary. Stages 5.6–5.15 are NOT STARTED.
+Status: **IN PROGRESS**. Stages 5.1–5.6 are COMPLETE; Stage 5.7 is COMPLETE under the superseding owner decision. Stripe cards and direct PayPal are active; Apple Pay, Google Pay, and Klarna are Coming soon and non-functional. The verified Stage 5.5 target remains the canonical real Product → Cart → `/checkout` → Stripe Payment Element path; Stage 5.8 is READY — NOT STARTED and Stages 5.9–5.15 are NOT STARTED.
 
 - [x] 5.1 Checkout Architecture (P0/Phase Ledger/P1/P2/P3 complete)
 - [x] 5.2 Contact & Delivery Address (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
 - [x] 5.3 Shipping Methods (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
 - [x] 5.4 Server Pricing, Tax & Inventory Review (P0/Owner Decisions/Phase Ledger/P1/P2/P3 complete)
-- [ ] 5.5 Stripe Integration
-- [ ] 5.6 PayPal Integration
-- [ ] 5.7 Wallet Eligibility (Apple Pay / Google Pay)
+- [x] 5.5 Stripe Integration (P0/Owner Decisions/Phase Ledger/P1/P2/P3/P4/P5 complete)
+- [x] 5.6 PayPal Integration (P0/Owner Decisions/Phase Ledger/P1/P2/P3/P4/P5 complete)
+- [x] 5.7 Wallet Eligibility (Apple Pay / Google Pay) — complete with wallet activation deferred
 - [ ] 5.8 Payment Webhooks & Idempotency
 - [ ] 5.9 Order Creation & State Transitions
 - [ ] 5.10 Failure, Cancellation & Pending States
@@ -133,6 +133,14 @@ Status: **IN PROGRESS**. Stages 5.1–5.4 are COMPLETE; Stage 5.5 is IN PROGRESS
 - [ ] 5.13 Payment Security Review
 - [ ] 5.14 Checkout Integration Tests
 - [ ] 5.15 Phase 5 Sign-Off
+
+Owner requirement for the later order-finalization stages: after trusted
+payment state creates a canonical AURA Order, send idempotent transactional
+emails to the customer and admin containing the canonical order number,
+products, quantities, prices, shipping, VAT/tax presentation, total, delivery
+address summary, payment method, status, and appropriate order document. A
+provider and production credentials remain outside this requirement until the
+owning production stage.
 
 Dependencies: Phases 1, 3, and 4.  
 Exit criteria: provider-sandbox flows and webhook verification pass; no raw card data is stored; redirects are not treated as payment proof.
@@ -170,6 +178,11 @@ Exit criteria: functional persistence for displayed forms; legal/business unknow
 - [ ] 7.12 Admin Security Review
 - [ ] 7.13 Admin Integration Tests
 - [ ] 7.14 Phase 7 Sign-Off
+
+Owner requirement for the existing Order Management stage: every canonical
+customer Order must later appear in the admin Order Management and audit
+surface as persisted order data. Any New Order notification belongs to its
+proper Phase 7 owner stage; it is not part of Stage 5.7 or 5.8.
 
 Dependencies: Phases 1, 3, 4, 5, and 6.  
 Exit criteria: every admin mutation is server-authorized, validated, audited where material, and reflected dynamically in the storefront.

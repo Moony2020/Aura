@@ -34,6 +34,8 @@ export type CartViewItem = {
   lineId: string;
   productSlug: string | null;
   productName: string;
+  audience: Product["audience"] | null;
+  concentration: string | null;
   variantId: string;
   variantLabel: string;
   quantity: number;
@@ -328,6 +330,8 @@ export class CartService {
       lineId: encodeCartLineId(line),
       productSlug: product?.slug ?? null,
       productName: product?.name ?? "Unavailable fragrance",
+      audience: product?.audience ?? null,
+      concentration: null,
       variantId: line.variantId,
       variantLabel: label,
       quantity: line.quantity,
@@ -359,6 +363,8 @@ export class CartService {
       lineId: encodeCartLineId(line),
       productSlug: product.slug,
       productName: product.name,
+      audience: product.audience ?? null,
+      concentration: variant.concentration,
       variantId: variant.id,
       variantLabel: variant.name,
       quantity: line.quantity,

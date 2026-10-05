@@ -225,16 +225,16 @@ export default function FragranceWorldSection({
             </div>
           )}
 
-          <div className={`flex items-center gap-4 pt-4 ${ctaJustify}`}>
+          <div className={`flex items-center gap-2.5 sm:gap-3.5 md:gap-4 pt-3 sm:pt-4 ${ctaJustify}`}>
             <CinematicAcquireButton
               worldNumber={Number(worldNumber)}
-              className="inline-flex items-center justify-center px-9 py-4 rounded-full bg-[#D4AF37] border border-[#D4AF37] text-[#080809] text-xs uppercase tracking-[0.25em] font-semibold leading-none whitespace-nowrap hover:bg-[#E5C158] hover:border-[#E5C158] transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(229,193,88,0.55)]"
+              className="inline-flex items-center justify-center px-5 py-2.5 sm:px-7 sm:py-3 md:px-8 md:py-3.5 rounded-full bg-[#D4AF37] border border-[#D4AF37] text-[#080809] text-[10px] sm:text-[11px] md:text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] md:tracking-[0.25em] font-semibold leading-none whitespace-nowrap hover:bg-[#E5C158] hover:border-[#E5C158] transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.35)] hover:shadow-[0_0_35px_rgba(229,193,88,0.55)]"
               accent={accent}
               align={isRight ? "right" : "left"}
             />
             <Link
               href="/fragrances"
-              className="inline-flex items-center justify-center px-7 py-4 rounded-full border text-[#FFF3D1] text-xs uppercase tracking-[0.25em] leading-none whitespace-nowrap hover:bg-[#121215]/50 transition-all duration-300"
+              className="inline-flex items-center justify-center px-4 py-2.5 sm:px-6 sm:py-3 md:px-7 md:py-3.5 rounded-full border text-[#FFF3D1] text-[10px] sm:text-[11px] md:text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] md:tracking-[0.25em] leading-none whitespace-nowrap hover:bg-[#121215]/50 transition-all duration-300"
               style={{ borderColor: `${accent}66` }}
             >
               Explore Notes

@@ -2,6 +2,179 @@
 
 Meaningful engineering changes are recorded by phase and stage.
 
+## 2026-09-16 — Stage 5.8 P5 PayPal Event Processing
+
+Completed verified PayPal webhook event processing and idempotency. The
+allowlist covers the active direct Orders v2 approval/capture evidence and
+excludes marketplace-only order completion and refunds. Events use the durable
+provider inbox, server-owned order/capture correlation, provider re-retrieval,
+monotonic reconciliation, safe retryable handling, and no webhook-triggered
+Capture or Order/inventory/email mutation. P6 remains READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.8 P6 Retry and Dead-Letter Safety
+
+Implemented the provider-neutral bounded processing lifecycle. Atomic claims
+count actual attempts 1–8, transient failures remain retryable, the eighth
+failure becomes durable `DEAD_LETTER`, stale claims recover through a bounded
+lease, and finalized records retain the existing 180-day TTL boundary. No
+attempt 9, provider commercial action, Order, inventory, email, or public retry
+endpoint was added. P7 remains READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.8 P4 PayPal Webhook Authenticity
+
+Added the server-only `POST /api/webhooks/paypal` authenticity boundary. It
+preserves the exact raw body, applies PayPal's CRC32/RSA self-verification
+contract, restricts certificate retrieval to official PayPal notification
+hosts with bounded no-redirect fetching, and fails closed. No inbox, payment,
+Capture, Order, inventory, email, or confirmation processing was added. P5
+remains READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.8 P3 Stripe Event Processing
+
+Completed verified Stripe PaymentIntent event processing after the P2 raw-body
+authenticity boundary. The processor uses a narrow lifecycle allowlist, the
+durable provider-event inbox, server-side PaymentIntent retrieval, canonical
+PaymentIntent correlation, duplicate/concurrent idempotency, retryable missing
+attempts, verified-unsupported retention, and sticky provider success. No Order,
+email, confirmation, or inventory lifecycle behavior was added. P4 PayPal
+authenticity is READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.5 Stripe Correlation Amendment
+
+Closed the narrow Stripe correlation gap by persisting the server-returned
+PaymentIntent ID and validated provider-truth status on new Stripe payment
+attempts before returning the client secret. Added a partial unique lookup
+index, monotonic confirmed-success metadata, active reservation reuse for the
+same stable attempt, and Atlas evidence with PayPal preservation. Stage 5.8
+P3 remains READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.8 P2 Stripe Authenticity Boundary
+
+Added the server-only `POST /api/webhooks/stripe` Route Handler with exact raw
+body verification, `Stripe-Signature`, `constructEvent`, a 128 KiB UTF-8 body
+limit, fail-closed secret handling, and safe responses. Local authenticity and
+P1 regression checks passed. P2 does not process events or mutate payment,
+inventory, Order, or email state. P3 Stripe event processing is READY — NOT
+STARTED.
+
+## 2026-09-16 — Stage 5.8 P1 Provider-event Persistence Boundary
+
+Implemented and verified the Atlas-backed `paymentProviderEvents` inbox with a
+strict safe-metadata validator, unique `(provider, providerEventId)` index,
+finalized 180-day expiry boundary, and idempotent duplicate handling. The P1
+check passed against non-production Atlas with fixture cleanup. No webhook
+verification, payment/order/inventory mutation, email, or provider
+configuration was added. P2 Stripe authenticity is READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.8 Owner Decisions and Phase Ledger
+
+Recorded the approved `paymentProviderEvents` inbox, compound provider-event
+idempotency key, safe metadata and retention rules, eight-attempt retry/dead-
+letter policy, verified-unknown handling, and future PayPal Sandbox webhook
+configuration boundary. Created the ordered Stage 5.8 Phase Ledger. No webhook
+runtime, collection, provider configuration, Order, or email was implemented.
+Stage 5.8 P1 is READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.8 Goal Contract
+
+Completed the Stage 5.8 discovery contract for verified Stripe and direct
+PayPal webhooks. It defines raw-body/signature verification, provider-event
+inbox idempotency, payment-attempt correlation, replay and out-of-order rules,
+security boundaries, retry policy, and the handoff to Stage 5.9. No webhook
+runtime, event collection, Order, or email was implemented. Owner Decisions are
+REQUIRED; the Phase Ledger and Runtime remain NOT STARTED.
+
+## 2026-09-16 — Stage 5.7 Superseding Payment Methods Decision
+
+Closed Stage 5.7 under the owner-approved current product scope. Stripe cards
+and direct PayPal remain the only functional payment paths. Apple Pay, Google
+Pay, and Klarna are presented as accessible, responsive Coming soon options;
+they do not use Express Checkout, open wallet sheets, create PaymentIntents,
+reserve inventory, or report payment success. Historical wallet implementation
+and external evidence remain factual and NOT YET VERIFIED/DEFERRED. Stage 5.8
+is READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.7 P7 Final Audit and Documentation Reconciliation
+
+Completed the final local audit for wallet method scope, provider ownership,
+server authority, secret boundaries, fallback behavior, Stripe/PayPal
+regressions, and the no-Order/no-webhook/no-confirmation boundary. TypeScript,
+ESLint, production build, dependency audit, runtime routes, diff checks, and
+documentation reconciliation passed. P6 remains IMPLEMENTED — NOT YET VERIFIED
+for real Apple Pay and Google Pay HTTPS/domain/device evidence; Stage 5.8 was
+not started and remains gated.
+
+## 2026-09-16 — Stage 5.7 P6 External Wallet Readiness
+
+Verified the P6 local readiness boundary: no staging or production domain was
+invented or registered, no deployment or credentials were
+requested, and no direct Apple Pay or Google Pay integration was added. Stripe
+wallet readiness, secret boundaries, PayPal preservation, TypeScript, ESLint,
+production build, runtime, and regression checks passed. Real HTTPS/domain/device
+evidence remains NOT YET VERIFIED by design. P7 is COMPLETE ✅.
+
+## 2026-09-16 — Stage 5.7 P5 Fallback and Cross-Provider Regression
+
+Completed controlled no-wallet, Apple-only, Google-only, and both-eligible
+fallback checks. Unavailable wallets leave no fake or empty container; Stripe
+cards and direct PayPal remain usable, and wallet browser events are not
+payment proof. Cancellation/error, accessibility, responsive, security,
+Stripe, PayPal, P2, P3, and P4 regression checks passed. P6 is READY — NOT
+STARTED; real HTTPS/domain/device evidence remains NOT YET VERIFIED.
+
+## 2026-09-16 — Stage 5.7 P4 Google Pay Eligibility and Rendering
+
+Completed the Google Pay boundary through Stripe Express Checkout on
+`/checkout`. Google Pay follows Stripe eligibility, is not duplicated in the
+card Payment Element, and remains within the Apple Pay + Google Pay allowlist.
+Apple Pay, cards, and direct PayPal regressions pass. No direct Google Pay
+integration, token storage, or real wallet transaction was added. Real
+HTTPS/domain/device evidence remains NOT YET VERIFIED. P5 is READY — NOT
+STARTED.
+
+## 2026-09-16 — Stage 5.7 P3 Apple Pay Eligibility and Rendering
+
+Completed the Apple Pay boundary through Stripe Express Checkout on
+`/checkout`. Rendering follows Stripe's eligibility result, hides the wallet
+surface when no eligible wallet exists, keeps Apple Pay out of the card Payment
+Element, and preserves the direct PayPal surface. No direct Apple Pay merchant
+integration or real wallet transaction was added. Local contract, regression,
+TypeScript, ESLint, runtime, and diff checks passed; real HTTPS/domain/device
+evidence remains NOT YET VERIFIED. P4 is READY — NOT STARTED.
+
+## 2026-09-16 — Stage 5.7 P2 Server-authoritative Wallet Preparation
+
+Completed the narrow P2 handoff by reusing the existing Stripe preparation
+authority for canonical Cart review, SEK amount and shipping calculation,
+tracked-inventory reservation, PaymentIntent preparation, and stable
+idempotency. Browser wallet data remains non-authoritative. No wallet-specific
+payment, capture, order, webhook, or commercial-state mutation was added.
+Focused contract, Stripe regression, TypeScript, ESLint, runtime, and diff
+checks passed. P3 is READY — NOT STARTED.
+
+## 2026-09-15 — Stage 5.7 P1 Stripe Express Checkout Foundation
+
+Added the Stripe Express Checkout Element foundation to `/checkout` inside the
+existing Stripe Elements root. The boundary is limited to Apple Pay and Google
+Pay, suppresses those wallets in the card Payment Element, preserves direct
+PayPal, and renders only when Stripe reports eligibility. P1 does not create a
+new PaymentIntent, reservation, payment, order, webhook, or commercial state.
+Real HTTPS domain/device wallet evidence remains pending; P2 is READY — NOT
+STARTED.
+
+## 2026-09-15 — Stage 5.6 P5 PayPal Audit and Documentation Reconciliation
+
+Verified and reconciled the approved real PayPal Sandbox commerce evidence:
+the canonical `699.00 SEK` merchandise plus `59.00 SEK` delivery totalled
+`758.00 SEK`; the new provider Order and its single Capture reached
+`COMPLETED`; and AURA persisted `PAYPAL_CAPTURED`. The expired prior Order
+remained uncaptured. Security, Stripe regression, TypeScript, ESLint,
+production build, `npm audit`, runtime routes, and `git diff --check` passed.
+
+No PayPal webhook, canonical AURA Order, Order number, Confirmation page, or
+Stage 5.7 behavior was introduced. Stage 5.6 is COMPLETE; Stage 5.7 is READY —
+NOT STARTED.
+
 ## 2026-09-10 — Stage 4.2 P3.4 Final Integration Audit
 
 Verified:

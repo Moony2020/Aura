@@ -6,7 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Sparkles, ArrowDown, ChevronRight, Compass } from "lucide-react";
+import { Sparkles, ArrowDown, ChevronRight, ArrowRight, Compass } from "lucide-react";
 import { publicEnv } from "@/config/env.public";
 import CinematicAcquireButton from "./CinematicAcquireButton";
 
@@ -259,46 +259,88 @@ export default function HeroPortalExperience() {
           </div>
         </div>
 
-        {/* Ethereal Golden Scent Frequency Graphic (Right background) */}
-        <div className="absolute right-4 sm:right-10 lg:right-16 top-[38%] -translate-y-1/2 w-60 sm:w-80 md:w-96 pointer-events-none opacity-65 hidden md:block">
-          <svg viewBox="0 0 400 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-            <path
-              d="M0 60 Q50 15, 100 60 T200 60 T300 60 T400 60"
-              stroke="url(#waveGold)"
-              strokeWidth="1.2"
-              fill="none"
+        {/* Right: Fragrance Preview Cards (01 Velvet Rose & 02 Oud) */}
+        <div className="hidden lg:flex flex-col gap-4 absolute right-6 sm:right-10 lg:right-12 xl:right-16 top-[48%] -translate-y-1/2 z-30 pointer-events-auto">
+          {/* Card 01: Velvet Rose */}
+          <button
+            type="button"
+            onClick={() => {
+              window.scrollTo({ top: 1050, behavior: "smooth" });
+            }}
+            className="group relative w-[275px] xl:w-[295px] h-[175px] xl:h-[188px] rounded-2xl overflow-hidden border border-[#E11D48]/35 hover:border-[#E11D48] shadow-[0_12px_35px_rgba(0,0,0,0.6)] hover:shadow-[0_0_30px_rgba(225,29,72,0.45)] transition-all duration-500 text-left cursor-pointer"
+            aria-label="Experience Fragrance 01: Velvet Rose"
+          >
+            {/* Full Background Image */}
+            <img
+              src="/assets/rose-hero.jpeg"
+              alt="Velvet Rose"
+              className="absolute inset-0 w-full h-full object-cover object-right transition-transform duration-700 ease-out group-hover:scale-110"
             />
-            <path
-              d="M0 60 Q50 0, 100 60 T200 60 T300 60 T400 60"
-              stroke="url(#waveGold)"
-              strokeWidth="0.9"
-              fill="none"
-              opacity="0.7"
+            {/* Cinematic Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#080809]/95 via-[#080809]/55 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080809]/70 via-transparent to-transparent pointer-events-none" />
+
+            {/* Content */}
+            <div className="relative z-10 h-full p-4 xl:p-5 flex flex-col justify-between items-start">
+              <div>
+                <span className="text-[10px] font-semibold tracking-[0.25em] text-[#FFF3D1]/80">
+                  01
+                </span>
+                <h3 className="font-serif-luxury text-lg xl:text-xl font-normal tracking-[0.06em] text-[#FFF7E6] uppercase leading-snug mt-0.5">
+                  Velvet Rose
+                </h3>
+                <p className="font-serif italic text-xs text-[#FFF9F2]/75 mt-1 tracking-wide">
+                  A blooming soul.
+                </p>
+              </div>
+
+              <div className="w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] rounded-full shrink-0 flex items-center justify-center border border-white/30 bg-black/40 backdrop-blur-md text-white transition-all duration-300 group-hover:bg-white/20 group-hover:border-white/70 group-hover:text-white group-hover:shadow-[0_0_16px_rgba(255,255,255,0.35)]">
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
+          </button>
+
+          {/* Card 02: Oud */}
+          <button
+            type="button"
+            onClick={() => {
+              document.getElementById("world-2")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="group relative w-[275px] xl:w-[295px] h-[175px] xl:h-[188px] rounded-2xl overflow-hidden border border-[#D4AF37]/35 hover:border-[#E5C158] shadow-[0_12px_35px_rgba(0,0,0,0.6)] hover:shadow-[0_0_30px_rgba(229,193,88,0.45)] transition-all duration-500 text-left cursor-pointer"
+            aria-label="Experience Fragrance 02: Oud"
+          >
+            {/* Full Background Image */}
+            <img
+              src="/assets/oud-hero.jpeg"
+              alt="Oud"
+              className="absolute inset-0 w-full h-full object-cover object-right transition-transform duration-700 ease-out group-hover:scale-110"
             />
-            <path
-              d="M0 60 Q50 30, 100 60 T200 60 T300 60 T400 60"
-              stroke="url(#waveGold)"
-              strokeWidth="1.5"
-              fill="none"
-            />
-            <path
-              d="M0 60 Q50 85, 100 60 T200 60 T300 60 T400 60"
-              stroke="url(#waveGold)"
-              strokeWidth="0.8"
-              fill="none"
-              opacity="0.5"
-            />
-            <defs>
-              <linearGradient id="waveGold" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#E5C158" stopOpacity="0.1" />
-                <stop offset="50%" stopColor="#FFF3D1" stopOpacity="0.95" />
-                <stop offset="100%" stopColor="#D4AF37" stopOpacity="0.1" />
-              </linearGradient>
-            </defs>
-          </svg>
+            {/* Cinematic Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#080809]/95 via-[#080809]/55 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080809]/70 via-transparent to-transparent pointer-events-none" />
+
+            {/* Content */}
+            <div className="relative z-10 h-full p-4 xl:p-5 flex flex-col justify-between items-start">
+              <div>
+                <span className="text-[10px] font-semibold tracking-[0.25em] text-[#E5C158]">
+                  02
+                </span>
+                <h3 className="font-serif-luxury text-lg xl:text-xl font-normal tracking-[0.06em] text-[#FFF7E6] uppercase leading-snug mt-0.5">
+                  Oud
+                </h3>
+                <p className="font-serif italic text-xs text-[#FFF9F2]/75 mt-1 tracking-wide">
+                  A timeless depth.
+                </p>
+              </div>
+
+              <div className="w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] rounded-full shrink-0 flex items-center justify-center border border-white/30 bg-black/40 backdrop-blur-md text-white transition-all duration-300 group-hover:bg-white/20 group-hover:border-white/70 group-hover:text-white group-hover:shadow-[0_0_16px_rgba(255,255,255,0.35)]">
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
+          </button>
         </div>
 
-        {/* Bottom Interactive Bar: Left Explore Button | Center Scroll to Enter | Right Collections Card */}
+        {/* Bottom Interactive Bar: Left Explore Button | Center Scroll to Enter */}
         <div className="relative w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center lg:items-end justify-between gap-4 pb-4 md:pb-6 pointer-events-auto">
           {/* Left Container: Explore Button + Scroll To Enter */}
           <div className="flex flex-col items-center lg:items-start space-y-2.5 sm:space-y-3 -translate-y-1 sm:-translate-y-2 md:-translate-y-3">
@@ -340,47 +382,6 @@ export default function HeroPortalExperience() {
             </span>
             <ArrowDown size={14} className="text-[#FFDF78] group-hover:text-[#FFF3D1] animate-bounce drop-shadow-[0_2px_8px_rgba(0,0,0,1)] transition-colors" />
           </div>
-
-          {/* Right: Explore Our Collections */}
-          <Link href="/collections" className="relative hidden lg:flex flex-col gap-2.5 p-3.5 sm:p-4 rounded-2xl overflow-hidden border border-[#E5C158]/15 max-w-[340px] sm:max-w-[360px] shadow-[0_10px_35px_rgba(0,0,0,0.5)]" aria-label="Explore our fragrance collections">
-            <video
-              aria-hidden="true"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover scale-125 blur-md brightness-95 saturate-75"
-            >
-              <source src={HERO_VIDEO_URL} type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-white/25" />
-
-            <div className="relative flex items-center gap-2.5">
-              <img
-                src="/assets/collection-1.jpg"
-                alt="La Collection Privée"
-                className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
-              />
-              <img
-                src="/assets/collection-2.jpg"
-                alt="Miss Dior"
-                className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
-              />
-              <img
-                src="/assets/collection-3.jpg"
-                alt="Scented Candle"
-                className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="relative flex flex-col text-left">
-              <span className="text-[9px] uppercase tracking-[0.25em] text-[#E5C158] font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
-                Explore Our Collections:
-              </span>
-              <span className="text-[10.5px] sm:text-[11px] text-[#FFF9F2] font-light truncate mt-0.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-                La Collection Privée, Miss Dior, Scented Candle
-              </span>
-            </div>
-          </Link>
         </div>
       </div>
 
@@ -456,14 +457,14 @@ export default function HeroPortalExperience() {
               </span>
             </div>
 
-            <div className="flex items-center gap-4 pt-4">
+            <div className="flex items-center gap-2.5 sm:gap-3.5 md:gap-4 pt-3 sm:pt-4">
               <CinematicAcquireButton
                 worldNumber={1}
-                className="inline-flex items-center justify-center px-9 py-4 rounded-full bg-[#D4AF37] border border-[#D4AF37] text-[#080809] text-xs uppercase tracking-[0.25em] font-semibold leading-none whitespace-nowrap hover:bg-[#E5C158] hover:border-[#E5C158] transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(229,193,88,0.55)]"
+                className="inline-flex items-center justify-center px-5 py-2.5 sm:px-7 sm:py-3 md:px-8 md:py-3.5 rounded-full bg-[#D4AF37] border border-[#D4AF37] text-[#080809] text-[10px] sm:text-[11px] md:text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] md:tracking-[0.25em] font-semibold leading-none whitespace-nowrap hover:bg-[#E5C158] hover:border-[#E5C158] transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.35)] hover:shadow-[0_0_35px_rgba(229,193,88,0.55)]"
               />
               <Link
                 href="/fragrances"
-                className="inline-flex items-center justify-center px-7 py-4 rounded-full border border-[#E5C158]/40 text-[#FFF3D1] text-xs uppercase tracking-[0.25em] leading-none whitespace-nowrap hover:border-[#E5C158] hover:bg-[#121215]/50 transition-all duration-300"
+                className="inline-flex items-center justify-center px-4 py-2.5 sm:px-6 sm:py-3 md:px-7 md:py-3.5 rounded-full border border-[#E5C158]/40 text-[#FFF3D1] text-[10px] sm:text-[11px] md:text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] md:tracking-[0.25em] leading-none whitespace-nowrap hover:border-[#E5C158] hover:bg-[#121215]/50 transition-all duration-300"
               >
                 Explore Notes
               </Link>

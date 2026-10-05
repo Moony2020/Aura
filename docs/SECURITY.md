@@ -19,6 +19,61 @@ The Phase 0 application is a public static/cinematic frontend with no database, 
 - Audit material admin and order state changes.
 - Prevent negative inventory through transactional guards.
 
+## Stage 5.8 P2 Stripe Webhook Authenticity
+
+The `POST /api/webhooks/stripe` boundary uses the exact raw request text and
+`Stripe-Signature` with the server-only `STRIPE_WEBHOOK_SECRET`. It rejects
+oversized or malformed input before trusted processing and never logs or
+returns the signature, raw payload, secret, stack trace, or provider details.
+P2 verifies authenticity only; it does not write the provider-event inbox,
+change payment state, mutate inventory, create Orders, or send email. Test and
+Live webhook secrets remain separate.
+
+## Stripe PaymentAttempt Correlation Amendment — Stage 5.5
+
+Stripe preparation persists only the server-returned PaymentIntent ID and
+validated provider status before exposing the client secret. Client secrets,
+raw PaymentIntent objects, webhook payloads, signatures, and secret material
+remain outside AURA persistence and logs. PayPal status and capture fields are
+unchanged.
+
+## Stage 5.8 P3 Stripe Event Processing
+
+Only successfully verified Stripe events enter the processor. The allowlist is
+limited to the current PaymentIntent lifecycle; current PaymentIntent state is
+retrieved server-side before provider truth is updated. Database uniqueness and
+atomic repository guards make duplicate deliveries and terminal-success
+downgrades safe. Unsupported events are retained as safe metadata, while raw
+payloads, signatures, secrets, client secrets, and card data remain excluded.
+
+## Stage 5.8 P4 PayPal Webhook Authenticity
+
+`POST /api/webhooks/paypal` reads the exact raw body once and verifies PayPal's
+`transmissionId|transmissionTime|webhookId|crc32` message with `SHA256withRSA`
+and a strict PayPal notification-certificate URL allowlist. It rejects
+oversized bodies, missing headers/configuration, unsupported algorithms, invalid
+signatures, unsafe certificate URLs, redirects, and unbounded certificate
+responses. P4 does not write the inbox, mutate payments, Capture, create
+Orders, change inventory, or send email.
+
+## Stage 5.8 P5 PayPal Event Processing
+
+Only P4-verified events reach the PayPal processor. The `(provider,
+providerEventId)` unique inbox boundary protects duplicate and concurrent
+delivery; trusted PayPal order/capture retrieval is required before supported
+payment-attempt reconciliation. `CHECKOUT.ORDER.APPROVED` never triggers
+Capture, and captured state cannot regress. P5 creates no Order, email,
+confirmation, inventory, or new provider action.
+
+## Stage 5.8 P6 Retry and Dead-Letter Safety
+
+Processing claims are database-guarded and lease-bounded. Only a winning claim
+increments the AURA attempt count; the eighth failed claim becomes
+`DEAD_LETTER`, with no automatic ninth attempt. Unresolved records have no TTL,
+while genuinely finalized records receive 180-day retention. Retry processing
+does not store raw bodies, signatures, secrets, tokens, or PII and performs no
+provider commercial action or Order/inventory/email mutation.
+
 ## Review Gates
 
 Security assumptions are reviewed during each owning phase and comprehensively in Phase 9. Missing credentials or legal/business data must be documented rather than simulated.

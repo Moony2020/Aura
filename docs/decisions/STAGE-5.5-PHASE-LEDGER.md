@@ -1,6 +1,6 @@
 # Stage 5.5 — Stripe Integration / Phase Ledger
 
-**Status:** Phase Ledger COMPLETE ✅ — P1 COMPLETE ✅ — P2 COMPLETE ✅ — P3 COMPLETE ✅ — P4 READY — NOT STARTED
+**Status:** Phase Ledger COMPLETE ✅ — P1 COMPLETE ✅ — P2 COMPLETE ✅ — P3 COMPLETE ✅ — P4 COMPLETE ✅ — P5 COMPLETE ✅ — Stripe correlation amendment COMPLETE ✅
 
 **Governing contract:** [Stage 5.5 P0 Goal Contract](STAGE-5.5-GOAL-CONTRACT.md)
 
@@ -16,7 +16,7 @@ variable boundaries and architecture documentation are preserved.
 - Only final server-authoritative SEK integer minor units may reach Stripe.
 - Payment proof is trusted provider API state and/or Stage 5.8 verified webhook evidence; redirect/client success is not proof.
 - PaymentIntent creation requires final review, legitimate TRACKED reservation, and external amount greater than zero.
-- The real catalog remains 60 sellable variants, 0 TRACKED, 60 UNTRACKED, 0 OUT_OF_STOCK; no stock may be invented.
+- The real catalog remains authoritative; no stock may be invented. For non-production P4 verification only, existing active catalog variants may receive explicitly controlled development-only TRACKED test inventory. `UNTRACKED` is not unlimited and is not implicitly purchasable.
 - No persistent Stripe Customer, saved cards, setup_future_usage, or email-based linking initially.
 - No raw PAN, CVC, expiry, secrets, tokens, PII, or sensitive payment payloads enter AURA storage/logs/metadata.
 - Stage 5.8 owns webhook verification and canonical event idempotency; Stage 5.9/5.10 own Order and canonical Payment transitions.
@@ -76,7 +76,7 @@ variable boundaries and architecture documentation are preserved.
 
 **Scope:** Final review handoff, legitimate TRACKED reservation precondition, 15-minute reservation boundary, positive external amount guard, and safe PaymentIntent reuse/update within one active attempt.
 
-**Preconditions:** P2 complete; approved non-production fixture decision; valid Stripe test credentials; synthetic TRACKED fixture created only by controlled setup.
+**Preconditions:** P2 complete; approved non-production test-inventory decision; valid Stripe test credentials; an existing active catalog variant selected by controlled setup and given explicitly controlled TRACKED test inventory only in non-production.
 
 **Allowed files/contracts:** checkout/payment-attempt orchestration, existing inventory reservation primitives, test fixture setup/cleanup, and focused tests.
 
@@ -86,7 +86,7 @@ variable boundaries and architecture documentation are preserved.
 
 **Credential requirements:** `STRIPE_SECRET_KEY` and, if client handoff is active, the approved public key.
 
-**Evidence:** Atlas-backed synthetic fixture, reservation ordering, concurrency/expiry, amount tampering, stale-review, zero-payment, cleanup, and no-production-catalog-change checks.
+**Evidence:** Atlas-backed controlled test inventory, reservation ordering, concurrency/expiry, amount tampering, stale-review, zero-payment, cleanup, and no-production-catalog-change checks.
 
 **Exclusions:** Webhooks, canonical idempotency state machine, Order creation, refunds, PayPal, wallets, and production inventory changes.
 
@@ -98,15 +98,15 @@ variable boundaries and architecture documentation are preserved.
 
 **Goal:** Add the approved Stripe Payment Element boundary to AURA checkout without receiving raw card data.
 
-**Scope:** Stripe-controlled payment collection, client-secret handoff, safe public configuration, loading/error states, and server confirmation handoff.
+**Scope:** Canonical real Cart input, Stripe-controlled payment collection, client-secret handoff, safe public configuration, loading/error states, and server preparation handoff.
 
 **Preconditions:** P3 complete; approved checkout owner boundary exists; test credentials and public key available.
 
-**Allowed files/contracts:** Checkout payment UI, client boundary, server action/route handoff, accessibility and focused runtime tests.
+**Allowed files/contracts:** Canonical Cart-to-checkout boundary, checkout payment UI, client boundary, server action/route handoff, controlled non-production test-inventory setup/cleanup, accessibility, and focused runtime tests.
 
 **Runtime changes allowed:** Stripe test-mode client interaction; no raw card form and no browser-authoritative payment success.
 
-**Invariants:** Client secret is handled only as Stripe-designated client-use data; never logged/persisted unnecessarily; redirect is navigation only.
+**Invariants:** Checkout derives lines and amount from the canonical server-side Cart and approved Stage 5.1–5.4 review; no synthetic product or hard-coded payment amount is the primary path. Client secret is handled only as Stripe-designated client-use data; never logged/persisted unnecessarily; redirect is navigation only.
 
 **Credential requirements:** Stripe test secret and owner-supplied publishable key.
 
@@ -151,12 +151,14 @@ Phase Ledger — COMPLETE ✅
 P1 — COMPLETE ✅
 P2 — COMPLETE ✅
 P3 — COMPLETE ✅
-P4 — IMPLEMENTED — EVIDENCE PENDING
-Stage 5.5-authorized runtime — IMPLEMENTED THROUGH P4
+P4 — COMPLETE ✅
+P5 — COMPLETE ✅
+Stage 5.5-authorized runtime — IMPLEMENTED THROUGH P4; P5 audit complete
 
 Repo-wide `git diff --check` — WAIVED: unrelated owner-authored whitespace
 change at `src/app/globals.css:6010`. P3-scoped diff check passed.
 
 ATLAS_STOP:
-P4 runtime Payment Element evidence is pending an authorized PaymentIntent/client-secret context. Do not begin P5.
+Stage 5.5 is COMPLETE ✅. Stage 5.6 PayPal Integration is READY — NOT STARTED.
+Awaiting owner approval before Stage 5.6.
 ```

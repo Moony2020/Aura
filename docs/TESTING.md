@@ -539,3 +539,52 @@ Stage 4.10 is COMPLETE ✅. Stage 4.11 — Phase 4 Sign-Off is READY — NOT STA
 - Final reconciliation of Stages 4.1–4.10 and Phase 4 acceptance criteria — PASS.
 - Auth/session/authorization, Stage 4.8 merge, Stage 4.9 security, redaction, Atlas cleanup, HTTP/404, TypeScript, full ESLint, production build, `npm audit` (0 vulnerabilities), documentation reconciliation, and `git diff --check` — PASS.
 - Phase 4 is COMPLETE ✅. Phase 5 — Checkout & Payments is READY — NOT STARTED. No Phase 5 work was started.
+
+## Stage 5.8 P2 — Stripe Authenticity Boundary
+
+- `check-stage58-p2-stripe-authenticity.mjs` — PASS: raw-body verification,
+  valid/invalid signatures, mutated body, missing signature, malformed body,
+  128 KiB oversized request, missing-secret fail-closed behavior, safe
+  responses, and no inbox/commercial mutation.
+- `POST /api/webhooks/stripe` runtime smoke — PASS for safe missing-signature
+  rejection; unsupported GET — PASS with 405; `/checkout` — PASS with 200.
+- P1 Atlas regression — PASS: strict provider-event validator, unique index,
+  duplicate idempotency, safe fields, finalized retention, and cleanup.
+
+## Stage 5.8 P3 Stripe Event Processing
+
+- `check-stage58-p3-stripe-processing.mjs` — PASS: signed P2-to-P3 handoff,
+  supported allowlist, Atlas inbox persistence, PaymentIntent correlation and
+  retrieval, duplicate and concurrent duplicate safety, distinct-event same
+  transition protection, missing-attempt retryability, verified unsupported
+  retention, sticky success, no terminal downgrade, no Order/email/inventory
+  mutation, and fixture cleanup.
+- Stage 5.8 P4 PayPal authenticity — PASS: raw-body CRC32 message construction,
+  required-header boundary, valid/invalid signature, body/header mutation,
+  algorithm allowlist, certificate URL SSRF/redirect policy, bounded certificate
+  fetch, safe response, and no inbox/commercial mutation.
+
+## Stage 5.8 P5 PayPal Event Processing
+
+- `check-stage58-p5-paypal-processing.mjs` — PASS: allowlist, P4 handoff,
+  Atlas inbox persistence, order/capture/custom-id correlation, duplicate and
+  concurrent duplicate safety, capture reconciliation without Capture,
+  monotonicity, pending evidence without invented state, verified unsupported,
+  missing-attempt retryability, no commercial mutation, and fixture cleanup.
+
+## Stage 5.8 P6 Retry, Dead-Letter, and Ordering
+
+- `check-stage58-p6-retry-dead-letter.mjs` — PASS: attempts 1–8, no attempt 9,
+  durable DEAD_LETTER, retry recovery, 180-day finalized retention, stale
+  PROCESSING lease recovery, active-claim protection, unsupported-event
+  non-retry, cross-provider separation, and no commercial mutation.
+
+## Stage 5.5 Stripe Correlation Amendment
+
+- `check-stage55-stripe-correlation-amendment.mjs` — PASS: server-returned
+  PaymentIntent identity persistence, partial unique Stripe lookup, validated
+  provider-truth status, confirmed-success monotonicity, no client-secret
+  storage, PayPal preservation, no Order/email/inventory lifecycle mutation,
+  and Atlas fixture cleanup.
+- Stripe preparation now persists the provider identity and initial status
+  before returning the client secret. Stage 5.8 P3 remains READY — NOT STARTED.

@@ -8,10 +8,6 @@ const WORLD_2_VIDEO_URL =
   publicEnv.NEXT_PUBLIC_CLOUDINARY_WORLD_2_VIDEO_URL ||
   "https://res.cloudinary.com/dcru4if6j/video/upload/v1786968035/2_lvv254.mp4";
 
-const WORLD_3_VIDEO_URL =
-  publicEnv.NEXT_PUBLIC_CLOUDINARY_WORLD_3_VIDEO_URL ||
-  "https://res.cloudinary.com/dcru4if6j/video/upload/v1786968075/3_umsmqe.mp4";
-
 const worlds = [
   {
     id: "world-2",
@@ -27,21 +23,6 @@ const worlds = [
     layout: "right" as const,
     entrance: "side" as const,
     notesStyle: "pills" as const,
-  },
-  {
-    id: "world-3",
-    worldNumber: "03",
-    videoSrc: WORLD_3_VIDEO_URL,
-    name: "Citrus",
-    nameAccent: "Vetiver",
-    classification: "Eau de Parfum • 100ml",
-    description:
-      "A crisp aromatic escape opening with bergamot, grounded by earthy vetiver and a whisper of clean white musk.",
-    notes: { top: "Bergamot", heart: "Vetiver", base: "White Musk" },
-    accent: "#A8C89D",
-    layout: "right" as const,
-    entrance: "side" as const,
-    notesStyle: "underline" as const,
   },
 ];
 
@@ -62,33 +43,28 @@ export default function FragranceWorlds() {
     const getSections = () =>
       Array.from(container.querySelectorAll<HTMLElement>("[data-world-section]"));
 
-    const getCurrentPosition = (): "hero" | 0 | 1 | "reviews" => {
+    const getCurrentPosition = (): "hero" | 0 | "reviews" => {
       const sections = getSections();
-      if (sections.length < 2) return "hero";
+      if (sections.length === 0) return "hero";
 
       const scrollY = window.scrollY;
       const vh = window.innerHeight;
 
       const top2 = sections[0].offsetTop;
-      const top3 = sections[1].offsetTop;
-      const bottom3 = top3 + sections[1].offsetHeight;
+      const bottom2 = top2 + sections[0].offsetHeight;
 
       // Above World 2
       if (scrollY < top2 - vh * 0.35) {
         return "hero";
       }
 
-      // Past World 3
-      if (scrollY > bottom3 - vh * 0.35) {
+      // Past World 2
+      if (scrollY > bottom2 - vh * 0.35) {
         return "reviews";
       }
 
-      // Inside Worlds 2, 3
-      const diff2 = Math.abs(scrollY - top2);
-      const diff3 = Math.abs(scrollY - top3);
-
-      if (diff2 <= diff3) return 0;
-      return 1;
+      // Inside World 2
+      return 0;
     };
 
     const absorbCooldown = () => {
@@ -122,14 +98,14 @@ export default function FragranceWorlds() {
     const onWheel = (e: WheelEvent) => {
       const pos = getCurrentPosition();
       const sections = getSections();
-      if (sections.length < 2) return;
+      if (sections.length === 0) return;
 
-      const bottom3 = sections[1].offsetTop + sections[1].offsetHeight;
-      const isNearWorld3FromBelow = pos === "reviews" && window.scrollY <= bottom3 + 80;
+      const bottom2 = sections[0].offsetTop + sections[0].offsetHeight;
+      const isNearWorld2FromBelow = pos === "reviews" && window.scrollY <= bottom2 + 80;
 
       // If locked, absorb event to prevent rapid momentum skips
       if (isLocked.current) {
-        if (pos !== "reviews" || (isNearWorld3FromBelow && e.deltaY < 0)) {
+        if (pos !== "reviews" || (isNearWorld2FromBelow && e.deltaY < 0)) {
           e.preventDefault();
         }
         absorbCooldown();
@@ -147,17 +123,11 @@ export default function FragranceWorlds() {
           }
         } else if (pos === 0) {
           e.preventDefault();
-          scrollToTarget(sections[1]);
-        } else if (pos === 1) {
-          e.preventDefault();
           scrollToTarget(document.getElementById("reviews"));
         }
       } else {
         // Scrolling UP
-        if (isNearWorld3FromBelow) {
-          e.preventDefault();
-          scrollToTarget(sections[1]);
-        } else if (pos === 1) {
+        if (isNearWorld2FromBelow) {
           e.preventDefault();
           scrollToTarget(sections[0]);
         } else if (pos === 0) {
@@ -178,24 +148,18 @@ export default function FragranceWorlds() {
 
       const pos = getCurrentPosition();
       const sections = getSections();
-      if (sections.length < 2) return;
+      if (sections.length === 0) return;
 
-      const bottom3 = sections[1].offsetTop + sections[1].offsetHeight;
-      const isNearWorld3FromBelow = pos === "reviews" && window.scrollY <= bottom3 + 80;
+      const bottom2 = sections[0].offsetTop + sections[0].offsetHeight;
+      const isNearWorld2FromBelow = pos === "reviews" && window.scrollY <= bottom2 + 80;
 
       if (deltaY > 0) {
         if (pos === 0) {
           e.preventDefault();
-          scrollToTarget(sections[1]);
-        } else if (pos === 1) {
-          e.preventDefault();
           scrollToTarget(document.getElementById("reviews"));
         }
       } else {
-        if (isNearWorld3FromBelow) {
-          e.preventDefault();
-          scrollToTarget(sections[1]);
-        } else if (pos === 1) {
+        if (isNearWorld2FromBelow) {
           e.preventDefault();
           scrollToTarget(sections[0]);
         } else if (pos === 0) {

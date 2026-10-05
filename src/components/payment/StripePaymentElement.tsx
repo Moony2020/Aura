@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 import { publicEnv } from "@/config/env.public";
@@ -13,6 +18,30 @@ const stripePromise = publicEnv.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 type StripePaymentElementFormProps = {
   onValidated?: () => Promise<void> | void;
 };
+
+function ComingSoonPaymentMethods() {
+  return (
+    <div className="mb-5 space-y-2" aria-label="Coming soon payment methods">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a869]">
+        More ways to pay
+      </p>
+      <div className="grid gap-2 sm:grid-cols-3">
+        {["Apple Pay", "Google Pay", "Klarna"].map((method) => (
+          <div
+            key={method}
+            aria-disabled="true"
+            className="rounded-md border border-[#3a3429] bg-[#17151a] px-3 py-3 text-center"
+          >
+            <p className="text-sm text-[#f3eee5]">{method}</p>
+            <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#a99e8a]">
+              Coming soon
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function PaymentElementForm({ onValidated }: StripePaymentElementFormProps) {
   const stripe = useStripe();
@@ -40,7 +69,8 @@ function PaymentElementForm({ onValidated }: StripePaymentElementFormProps) {
 
   return (
     <form onSubmit={handleSubmit} aria-label="Secure card payment">
-      <PaymentElement />
+      <ComingSoonPaymentMethods />
+      <PaymentElement options={{ wallets: { applePay: "never", googlePay: "never" } }} />
       {message ? <p role="alert">{message}</p> : null}
       <button type="submit" disabled={!stripe || !elements || pending}>
         {pending ? "Preparing…" : "Continue securely"}

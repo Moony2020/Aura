@@ -9,8 +9,6 @@ export const publicEnv = {
     process.env.NEXT_PUBLIC_CLOUDINARY_WORLD_1_VIDEO_URL,
   NEXT_PUBLIC_CLOUDINARY_WORLD_2_VIDEO_URL:
     process.env.NEXT_PUBLIC_CLOUDINARY_WORLD_2_VIDEO_URL,
-  NEXT_PUBLIC_CLOUDINARY_WORLD_3_VIDEO_URL:
-    process.env.NEXT_PUBLIC_CLOUDINARY_WORLD_3_VIDEO_URL,
 } as const;
 
 export type PublicEnv = typeof publicEnv;

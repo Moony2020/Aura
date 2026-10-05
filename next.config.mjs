@@ -10,7 +10,6 @@ const publicEnvSchema = z.object({
   NEXT_PUBLIC_CLOUDINARY_HERO_VIDEO_URL: optionalUrl,
   NEXT_PUBLIC_CLOUDINARY_WORLD_1_VIDEO_URL: optionalUrl,
   NEXT_PUBLIC_CLOUDINARY_WORLD_2_VIDEO_URL: optionalUrl,
-  NEXT_PUBLIC_CLOUDINARY_WORLD_3_VIDEO_URL: optionalUrl,
 });
 
 publicEnvSchema.parse({
@@ -21,13 +20,13 @@ publicEnvSchema.parse({
     process.env.NEXT_PUBLIC_CLOUDINARY_WORLD_1_VIDEO_URL,
   NEXT_PUBLIC_CLOUDINARY_WORLD_2_VIDEO_URL:
     process.env.NEXT_PUBLIC_CLOUDINARY_WORLD_2_VIDEO_URL,
-  NEXT_PUBLIC_CLOUDINARY_WORLD_3_VIDEO_URL:
-    process.env.NEXT_PUBLIC_CLOUDINARY_WORLD_3_VIDEO_URL,
 });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Keep the framework's development indicator in its normal, non-blocking corner.
+  devIndicators: { position: "bottom-left" },
   allowedDevOrigins: ["localhost", "127.0.0.1", "192.168.10.226"],
   experimental: {
     staleTimes: {

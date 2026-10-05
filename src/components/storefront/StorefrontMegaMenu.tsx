@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import {
@@ -55,6 +55,7 @@ function generateMegaMenuPath(W: number, H: number, x: number, w: number) {
 }
 
 export function StorefrontMegaMenu({ collections }: { collections: CollectionSummary[] }) {
+  const router = useRouter();
   const pathname = usePathname();
   const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
   const [tabMetrics, setTabMetrics] = useState({ x: 44, w: 120 });
@@ -155,7 +156,7 @@ export function StorefrontMegaMenu({ collections }: { collections: CollectionSum
           aria-current={isFragrancesActive ? "page" : undefined}
           aria-expanded={openMenu === "fragrances"}
           aria-controls="storefront-mega-fragrances"
-          onClick={() => toggleMenu("fragrances")}
+          onClick={() => router.push("/fragrances")}
           onMouseEnter={() => openMenuWithDelay("fragrances")}
           onFocus={() => openMenuWithDelay("fragrances")}
           ref={(element) => {
